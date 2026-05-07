@@ -1,0 +1,32 @@
+# ============================================
+# RENDER BLUEPRINT
+# ============================================
+# When you connect this repo to Render and use "Blueprint" deploy,
+# it provisions BOTH services described below in one click.
+
+databases:
+  - name: estateai-db
+    plan: free
+    databaseName: estateai
+    user: estateai
+
+services:
+  - type: web
+    name: estateai-backend
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: estateai-db
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        generateValue: true   # Render auto-generates a secure random value
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.11.10
+    healthCheckPath: /health

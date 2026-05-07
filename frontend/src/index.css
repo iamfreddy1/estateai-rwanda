@@ -1,0 +1,51 @@
+/* ============================================
+   GLOBAL STYLES (Rwanda Edition + Dark mode)
+   ============================================ */
+
+@import "tailwindcss";
+
+/* Enable class-based dark mode (toggled by adding 'dark' class to <html>) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Reset some defaults so our app fills the screen properly */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Smooth dark-mode transitions */
+html {
+  transition: background-color 0.3s ease;
+}
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* When dark mode is on, make body dark */
+html.dark, html.dark body {
+  background-color: #0b1020;
+  color: #e5e7eb;
+}
+
+/* Skeleton shimmer animation */
+@keyframes shimmer {
+  0%   { background-position: -1000px 0; }
+  100% { background-position:  1000px 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+html.dark .shimmer {
+  background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
+  background-size: 1000px 100%;
+}
+
+/* Smoother scrolling */
+html {
+  scroll-behavior: smooth;
+}

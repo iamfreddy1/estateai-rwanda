@@ -1,0 +1,301 @@
+title,district,sector,land_size,road_access,proximity_to_city,proximity_to_road,slope,utilities,title_deed,price_per_sqm_rwf,price_rwf
+Land in Gitega,Nyarugenge,Gitega,3075,dirt,34,494,gentle,1,1,28572.0,87858496.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,2022,dirt,6,107,flat,1,1,152723.0,308805957.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,4592,paved,26,268,flat,1,1,86827.0,398707469.0
+Land in Gisozi,Gasabo,Gisozi,2634,paved,19,226,steep,1,1,55650.0,146581127.0
+Land in Nyarutarama,Gasabo,Nyarutarama,3023,dirt,21,442,gentle,1,0,182600.0,551998540.0
+Land in Kanombe,Kicukiro,Kanombe,3744,paved,35,90,steep,0,1,56244.0,210577969.0
+Land in Gahanga,Kicukiro,Gahanga,3663,paved,35,158,gentle,1,1,48981.0,179417352.0
+Land in Remera,Gasabo,Remera,3096,paved,10,155,flat,1,1,202031.0,625489436.0
+Land in Kibagabaga,Gasabo,Kibagabaga,2449,paved,1,352,gentle,0,1,109567.0,268329707.0
+Land in Gisozi,Gasabo,Gisozi,2499,dirt,1,280,gentle,1,0,46059.0,115100196.0
+Land in Gacuriro,Gasabo,Gacuriro,1437,dirt,25,424,gentle,1,1,95291.0,136933636.0
+Land in Kanombe,Kicukiro,Kanombe,2327,paved,35,414,gentle,1,0,46190.0,107485113.0
+Land in Remera,Gasabo,Remera,1004,dirt,29,139,steep,0,1,68829.0,69104628.0
+Land in Nyarutarama,Gasabo,Nyarutarama,4482,paved,7,144,gentle,1,1,368377.0,1651065846.0
+Land in Kimihurura,Gasabo,Kimihurura,1334,paved,14,175,gentle,1,1,381641.0,509108836.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,359,paved,10,28,gentle,0,1,128259.0,46045060.0
+Land in Gacuriro,Gasabo,Gacuriro,2148,dirt,1,62,steep,1,1,113620.0,244056174.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,374,paved,7,266,steep,0,1,129646.0,48487517.0
+Land in Remera,Gasabo,Remera,2746,paved,3,381,steep,0,1,121549.0,333774678.0
+Land in Gacuriro,Gasabo,Gacuriro,3052,dirt,14,498,flat,1,1,89185.0,272191094.0
+Land in Gitega,Nyarugenge,Gitega,2361,dirt,26,404,flat,1,1,46631.0,110096727.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,4984,paved,6,127,flat,1,1,126115.0,628558288.0
+Land in Gitega,Nyarugenge,Gitega,591,paved,10,359,steep,0,1,51279.0,30305752.0
+Land in Kanombe,Kicukiro,Kanombe,2945,dirt,29,375,flat,1,1,58267.0,171596007.0
+Land in Remera,Gasabo,Remera,423,paved,29,286,gentle,0,1,129512.0,54783644.0
+Land in Kanombe,Kicukiro,Kanombe,2948,paved,30,140,steep,0,1,53236.0,156938946.0
+Land in Kacyiru,Gasabo,Kacyiru,3781,paved,17,277,gentle,1,1,234592.0,886991124.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,1619,dirt,24,397,steep,1,1,73219.0,118541735.0
+Land in Kanombe,Kicukiro,Kanombe,3274,paved,32,392,steep,1,1,52413.0,171601543.0
+Land in Kibagabaga,Gasabo,Kibagabaga,1004,paved,5,22,flat,1,1,170819.0,171502557.0
+Land in Gacuriro,Gasabo,Gacuriro,908,paved,25,336,gentle,0,1,122448.0,111182498.0
+Land in Kibagabaga,Gasabo,Kibagabaga,1908,dirt,5,6,flat,0,0,93580.0,178551588.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,597,paved,27,420,gentle,0,1,86412.0,51587760.0
+Land in Kanombe,Kicukiro,Kanombe,433,dirt,20,39,flat,0,1,79941.0,34614604.0
+Land in Kanombe,Kicukiro,Kanombe,3256,paved,34,336,flat,0,0,51405.0,167375331.0
+Land in Kanombe,Kicukiro,Kanombe,3501,dirt,23,345,gentle,0,1,44084.0,154338603.0
+Land in Gitega,Nyarugenge,Gitega,1577,paved,33,172,steep,1,0,36757.0,57965956.0
+Land in Kibagabaga,Gasabo,Kibagabaga,2681,dirt,21,432,gentle,1,1,78041.0,209229257.0
+Land in Kibagabaga,Gasabo,Kibagabaga,2071,dirt,14,192,steep,0,1,76031.0,157460375.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,3352,paved,3,145,steep,1,1,110497.0,370387480.0
+Land in Nyarutarama,Gasabo,Nyarutarama,2560,dirt,14,438,gentle,1,1,256830.0,657484217.0
+Land in Remera,Gasabo,Remera,4635,paved,10,48,flat,1,1,177207.0,821354350.0
+Land in Gahanga,Kicukiro,Gahanga,2146,paved,20,47,steep,1,0,48340.0,103736885.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,2759,dirt,12,249,steep,0,1,68660.0,189432890.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,2560,paved,25,40,flat,0,1,68356.0,174992600.0
+Land in Gisozi,Gasabo,Gisozi,3512,dirt,8,445,flat,0,1,54515.0,191455574.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,3233,paved,34,21,gentle,0,1,49221.0,159131014.0
+Land in Gacuriro,Gasabo,Gacuriro,1354,paved,26,497,gentle,0,1,102168.0,138335688.0
+Land in Gisozi,Gasabo,Gisozi,2473,dirt,10,67,gentle,1,1,57487.0,142166029.0
+Land in Gisozi,Gasabo,Gisozi,2250,paved,33,222,steep,1,1,52506.0,118139364.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,3338,dirt,13,287,steep,0,1,50083.0,167177658.0
+Land in Remera,Gasabo,Remera,3623,paved,6,57,steep,1,1,134033.0,485600428.0
+Land in Kibagabaga,Gasabo,Kibagabaga,4965,dirt,20,86,gentle,0,0,56346.0,279759268.0
+Land in Kacyiru,Gasabo,Kacyiru,3708,paved,15,102,steep,1,1,231055.0,856752124.0
+Land in Kimihurura,Gasabo,Kimihurura,546,paved,10,444,gentle,1,1,277478.0,151503065.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,3959,paved,14,378,steep,1,1,80132.0,317243312.0
+Land in Kanombe,Kicukiro,Kanombe,4056,dirt,10,355,steep,0,1,47829.0,193993493.0
+Land in Kanombe,Kicukiro,Kanombe,456,paved,4,145,flat,0,1,108444.0,49450631.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,168,paved,18,339,steep,1,1,47220.0,7932963.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,3266,paved,25,260,steep,1,1,46293.0,151193871.0
+Land in Kanombe,Kicukiro,Kanombe,821,paved,33,494,gentle,0,1,56232.0,46166854.0
+Land in Kanombe,Kicukiro,Kanombe,2597,paved,26,381,flat,1,1,80466.0,208969956.0
+Land in Remera,Gasabo,Remera,2034,dirt,33,141,flat,0,0,78763.0,160204203.0
+Land in Nyarutarama,Gasabo,Nyarutarama,4646,dirt,15,77,gentle,0,1,228261.0,1060501295.0
+Land in Gisozi,Gasabo,Gisozi,4365,dirt,15,213,flat,0,1,49287.0,215137477.0
+Land in Gahanga,Kicukiro,Gahanga,2797,paved,9,105,steep,1,1,69119.0,193325708.0
+Land in Kacyiru,Gasabo,Kacyiru,2631,dirt,34,465,flat,1,0,109769.0,288803489.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,4727,dirt,21,34,steep,0,1,28623.0,135301353.0
+Land in Kacyiru,Gasabo,Kacyiru,341,dirt,27,492,gentle,1,1,158009.0,53880994.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,2342,paved,13,54,flat,1,1,81725.0,191400294.0
+Land in Remera,Gasabo,Remera,4745,dirt,15,118,steep,1,1,93037.0,441461011.0
+Land in Kacyiru,Gasabo,Kacyiru,4215,dirt,31,364,steep,1,0,77190.0,325356200.0
+Land in Kacyiru,Gasabo,Kacyiru,1441,paved,3,209,flat,0,0,224870.0,324037229.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,1761,dirt,5,90,gentle,0,1,48480.0,85372461.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,2121,paved,3,311,steep,0,1,86786.0,184073982.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,4785,dirt,34,328,steep,0,1,50944.0,243768721.0
+Land in Nyarutarama,Gasabo,Nyarutarama,2112,paved,26,376,flat,0,1,335326.0,708208726.0
+Land in Nyarutarama,Gasabo,Nyarutarama,1655,paved,26,452,gentle,0,1,264756.0,438171894.0
+Land in Remera,Gasabo,Remera,546,dirt,10,237,steep,1,1,91716.0,50077078.0
+Land in Gitega,Nyarugenge,Gitega,4895,dirt,35,69,gentle,1,1,36162.0,177010956.0
+Land in Gahanga,Kicukiro,Gahanga,1754,dirt,6,128,gentle,0,0,44354.0,77797199.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,1112,paved,29,324,gentle,1,1,134026.0,149037028.0
+Land in Kanombe,Kicukiro,Kanombe,1409,paved,25,22,flat,0,1,104651.0,147453922.0
+Land in Kacyiru,Gasabo,Kacyiru,1428,dirt,12,393,steep,1,1,154523.0,220658678.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,2465,dirt,8,460,flat,0,1,77221.0,190349514.0
+Land in Nyarutarama,Gasabo,Nyarutarama,3857,paved,32,278,flat,0,1,270319.0,1042620308.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,3997,paved,29,40,steep,0,1,40363.0,161332365.0
+Land in Gahanga,Kicukiro,Gahanga,4667,dirt,14,25,flat,1,1,50985.0,237948808.0
+Land in Nyarutarama,Gasabo,Nyarutarama,4835,dirt,20,169,flat,1,1,253777.0,1227011971.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,2429,dirt,12,494,gentle,0,1,31441.0,76369245.0
+Land in Gitega,Nyarugenge,Gitega,2551,paved,25,419,flat,0,1,50396.0,128559317.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,1202,paved,18,168,steep,1,1,88756.0,106684326.0
+Land in Nyarutarama,Gasabo,Nyarutarama,995,dirt,34,44,gentle,0,1,255880.0,254600287.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,2452,paved,21,132,steep,0,1,117719.0,288646208.0
+Land in Gahanga,Kicukiro,Gahanga,4709,paved,32,252,flat,0,1,49946.0,235196952.0
+Land in Gacuriro,Gasabo,Gacuriro,112,paved,30,320,flat,0,1,139238.0,15594664.0
+Land in Gisozi,Gasabo,Gisozi,3491,paved,23,286,steep,1,1,55394.0,193381378.0
+Land in Remera,Gasabo,Remera,655,paved,33,281,gentle,0,1,116286.0,76167344.0
+Land in Gisozi,Gasabo,Gisozi,4760,dirt,2,426,flat,1,1,62611.0,298027091.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,3987,dirt,9,246,flat,0,0,57231.0,228180658.0
+Land in Kibagabaga,Gasabo,Kibagabaga,3888,dirt,27,475,steep,1,1,49528.0,192565487.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,2684,dirt,2,106,steep,0,1,43016.0,115454804.0
+Land in Kibagabaga,Gasabo,Kibagabaga,642,dirt,18,430,flat,1,1,90886.0,58349003.0
+Land in Kacyiru,Gasabo,Kacyiru,4777,dirt,12,304,flat,0,1,176565.0,843452016.0
+Land in Kibagabaga,Gasabo,Kibagabaga,359,paved,6,254,flat,1,1,156126.0,56049186.0
+Land in Kanombe,Kicukiro,Kanombe,2576,paved,24,401,flat,0,0,56804.0,146328121.0
+Land in Nyarutarama,Gasabo,Nyarutarama,4053,dirt,10,97,gentle,0,1,265988.0,1078050937.0
+Land in Gitega,Nyarugenge,Gitega,2781,paved,7,420,steep,0,1,52141.0,145004606.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,3275,dirt,34,59,flat,1,1,77241.0,252963848.0
+Land in Kimihurura,Gasabo,Kimihurura,2830,paved,3,52,steep,0,1,243385.0,688780943.0
+Land in Gitega,Nyarugenge,Gitega,2657,dirt,14,164,flat,1,1,54858.0,145757719.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,1063,paved,11,140,flat,1,1,145527.0,154695556.0
+Land in Gacuriro,Gasabo,Gacuriro,4544,paved,21,138,flat,0,1,146243.0,664526210.0
+Land in Kacyiru,Gasabo,Kacyiru,683,paved,22,276,gentle,1,1,281642.0,192361695.0
+Land in Nyarutarama,Gasabo,Nyarutarama,967,paved,6,218,gentle,1,1,486264.0,470217714.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,3752,dirt,20,170,flat,0,1,95406.0,357963463.0
+Land in Gitega,Nyarugenge,Gitega,3914,dirt,6,416,steep,1,1,37790.0,147908490.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,3912,paved,15,73,steep,1,1,110666.0,432925435.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,2806,dirt,21,232,gentle,1,1,39329.0,110356291.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,1499,paved,23,309,steep,1,1,87650.0,131386777.0
+Land in Gitega,Nyarugenge,Gitega,976,paved,5,405,gentle,0,1,68515.0,66870687.0
+Land in Gahanga,Kicukiro,Gahanga,2096,paved,31,196,flat,1,1,68875.0,144362920.0
+Land in Gitega,Nyarugenge,Gitega,3666,dirt,22,278,steep,1,1,30205.0,110731150.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,4803,dirt,8,303,steep,1,1,84759.0,407098823.0
+Land in Kacyiru,Gasabo,Kacyiru,2623,dirt,5,306,flat,0,1,210352.0,551752821.0
+Land in Kibagabaga,Gasabo,Kibagabaga,4149,dirt,4,46,flat,0,0,83701.0,347277516.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,101,dirt,10,231,steep,1,1,40071.0,4047148.0
+Land in Gacuriro,Gasabo,Gacuriro,2693,paved,20,470,gentle,0,0,97047.0,261348510.0
+Land in Gahanga,Kicukiro,Gahanga,166,dirt,33,206,flat,0,1,48123.0,7988340.0
+Land in Nyarutarama,Gasabo,Nyarutarama,106,dirt,23,56,gentle,0,1,287963.0,30524110.0
+Land in Gisozi,Gasabo,Gisozi,2706,dirt,26,195,gentle,0,1,44517.0,120464210.0
+Land in Gacuriro,Gasabo,Gacuriro,4650,paved,24,430,gentle,1,0,90402.0,420371058.0
+Land in Kacyiru,Gasabo,Kacyiru,195,paved,2,73,steep,0,1,290119.0,56573140.0
+Land in Kacyiru,Gasabo,Kacyiru,793,paved,27,440,gentle,0,1,217843.0,172749621.0
+Land in Gahanga,Kicukiro,Gahanga,1572,paved,28,282,gentle,1,1,61129.0,96094272.0
+Land in Nyarutarama,Gasabo,Nyarutarama,4834,paved,16,364,steep,1,0,202998.0,981292385.0
+Land in Nyarutarama,Gasabo,Nyarutarama,410,dirt,24,57,steep,1,1,218107.0,89423845.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,4412,dirt,18,238,steep,1,0,49619.0,218920087.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,739,dirt,35,408,steep,1,1,45080.0,33314066.0
+Land in Gitega,Nyarugenge,Gitega,188,paved,33,463,gentle,0,1,46734.0,8786061.0
+Land in Gitega,Nyarugenge,Gitega,2513,paved,3,355,steep,0,1,55354.0,139105500.0
+Land in Nyarutarama,Gasabo,Nyarutarama,3976,dirt,4,336,gentle,0,1,232090.0,922790696.0
+Land in Kimihurura,Gasabo,Kimihurura,1138,paved,18,129,flat,0,1,318149.0,362054012.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,1013,dirt,10,337,gentle,1,1,118375.0,119914224.0
+Land in Gacuriro,Gasabo,Gacuriro,4072,paved,34,441,flat,1,1,101396.0,412883282.0
+Land in Kacyiru,Gasabo,Kacyiru,4162,dirt,27,394,gentle,1,1,137658.0,572930881.0
+Land in Gacuriro,Gasabo,Gacuriro,4832,dirt,23,27,steep,1,1,74489.0,359931342.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,3366,paved,31,382,steep,1,1,61769.0,207914133.0
+Land in Remera,Gasabo,Remera,1289,paved,28,6,gentle,0,1,155527.0,200474302.0
+Land in Kanombe,Kicukiro,Kanombe,436,paved,35,326,gentle,0,1,75611.0,32966467.0
+Land in Remera,Gasabo,Remera,2844,paved,7,130,steep,0,1,136295.0,387624004.0
+Land in Gacuriro,Gasabo,Gacuriro,4922,dirt,34,172,steep,0,1,61340.0,301917564.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,169,dirt,1,210,flat,0,1,54226.0,9164207.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,2420,paved,3,12,steep,1,0,118652.0,287137042.0
+Land in Gacuriro,Gasabo,Gacuriro,1097,dirt,8,44,steep,1,1,125527.0,137702979.0
+Land in Gahanga,Kicukiro,Gahanga,1613,dirt,12,129,gentle,1,0,44512.0,71798098.0
+Land in Remera,Gasabo,Remera,3597,dirt,21,131,flat,0,1,92514.0,332773965.0
+Land in Gisozi,Gasabo,Gisozi,2825,dirt,17,489,gentle,1,1,50414.0,142418461.0
+Land in Gacuriro,Gasabo,Gacuriro,3316,paved,32,55,flat,0,1,139676.0,463165486.0
+Land in Kimihurura,Gasabo,Kimihurura,3717,dirt,7,17,flat,1,1,288997.0,1074201298.0
+Land in Nyarutarama,Gasabo,Nyarutarama,4177,paved,1,477,flat,0,1,377266.0,1575841786.0
+Land in Gisozi,Gasabo,Gisozi,4807,paved,32,244,gentle,1,1,63115.0,303395523.0
+Land in Kimihurura,Gasabo,Kimihurura,4524,paved,25,488,steep,0,1,157045.0,710471275.0
+Land in Kibagabaga,Gasabo,Kibagabaga,2831,dirt,26,28,steep,0,1,60441.0,171107842.0
+Land in Kibagabaga,Gasabo,Kibagabaga,759,dirt,19,331,flat,1,1,92400.0,70131847.0
+Land in Gacuriro,Gasabo,Gacuriro,2548,dirt,7,322,steep,1,1,94265.0,240186714.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,1652,paved,13,12,steep,0,1,126713.0,209330618.0
+Land in Gitega,Nyarugenge,Gitega,4528,dirt,32,273,gentle,0,1,31770.0,143854655.0
+Land in Kibagabaga,Gasabo,Kibagabaga,450,paved,14,413,steep,0,1,93925.0,42266413.0
+Land in Kanombe,Kicukiro,Kanombe,1320,dirt,15,473,flat,1,1,69298.0,91472944.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,475,paved,9,7,flat,0,0,117279.0,55707729.0
+Land in Kimihurura,Gasabo,Kimihurura,3837,dirt,5,418,flat,1,1,222628.0,854225443.0
+Land in Kimihurura,Gasabo,Kimihurura,1760,paved,26,166,flat,0,1,265700.0,467631196.0
+Land in Gitega,Nyarugenge,Gitega,1846,dirt,12,171,flat,1,1,59713.0,110230310.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,3130,dirt,29,124,steep,1,1,77989.0,244106859.0
+Land in Gahanga,Kicukiro,Gahanga,3181,dirt,2,450,gentle,1,1,52875.0,168194760.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,4963,dirt,27,355,gentle,0,1,71913.0,356903117.0
+Land in Kanombe,Kicukiro,Kanombe,3789,paved,12,312,steep,1,1,69743.0,264256185.0
+Land in Kimihurura,Gasabo,Kimihurura,2567,paved,1,285,flat,1,0,314537.0,807415873.0
+Land in Gahanga,Kicukiro,Gahanga,3064,dirt,35,259,flat,1,1,37938.0,116243254.0
+Land in Nyarutarama,Gasabo,Nyarutarama,1686,paved,10,350,gentle,1,1,447787.0,754968111.0
+Land in Nyarutarama,Gasabo,Nyarutarama,3083,paved,28,128,gentle,0,0,235277.0,725359948.0
+Land in Kimihurura,Gasabo,Kimihurura,529,dirt,12,80,flat,1,1,314978.0,166623363.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,3743,dirt,21,214,flat,0,0,63985.0,239496305.0
+Land in Kimihurura,Gasabo,Kimihurura,2771,paved,16,377,gentle,0,1,231715.0,642081079.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,4893,paved,28,74,flat,0,1,92934.0,454727783.0
+Land in Kacyiru,Gasabo,Kacyiru,3849,dirt,23,499,gentle,1,1,137660.0,529852697.0
+Land in Nyarutarama,Gasabo,Nyarutarama,2398,paved,30,234,gentle,1,1,362804.0,870004372.0
+Land in Gahanga,Kicukiro,Gahanga,1384,dirt,11,295,steep,0,1,42073.0,58229131.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,1873,dirt,30,142,flat,0,1,66279.0,124140250.0
+Land in Kibagabaga,Gasabo,Kibagabaga,3657,dirt,10,467,steep,0,1,49010.0,179230882.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,4230,paved,34,201,gentle,0,1,67357.0,284918553.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,2070,paved,1,354,steep,1,1,94150.0,194890537.0
+Land in Gacuriro,Gasabo,Gacuriro,843,paved,20,82,steep,1,1,143988.0,121382020.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,3899,dirt,26,94,gentle,0,1,54626.0,212987337.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,679,paved,22,271,flat,1,1,71231.0,48365686.0
+Land in Gahanga,Kicukiro,Gahanga,4543,dirt,14,403,steep,1,0,26453.0,120178201.0
+Land in Nyarutarama,Gasabo,Nyarutarama,4316,dirt,24,454,flat,1,1,225606.0,973714807.0
+Land in Kibagabaga,Gasabo,Kibagabaga,3101,paved,5,287,steep,0,1,92205.0,285929043.0
+Land in Kanombe,Kicukiro,Kanombe,1030,dirt,14,385,steep,0,1,52692.0,54272349.0
+Land in Kanombe,Kicukiro,Kanombe,3564,paved,5,190,gentle,1,1,110271.0,393007537.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,4457,dirt,35,460,gentle,1,1,50049.0,223070062.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,637,paved,30,44,flat,1,1,181090.0,115354235.0
+Land in Kimihurura,Gasabo,Kimihurura,995,paved,8,356,flat,1,0,274550.0,273176760.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,285,paved,35,477,flat,1,1,53032.0,15114030.0
+Land in Nyarutarama,Gasabo,Nyarutarama,2488,paved,2,446,flat,0,1,380969.0,947850201.0
+Land in Gahanga,Kicukiro,Gahanga,2908,dirt,21,248,steep,0,1,33248.0,96684672.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,2591,dirt,20,87,gentle,1,1,75327.0,195172636.0
+Land in Nyarutarama,Gasabo,Nyarutarama,1315,paved,30,489,flat,0,1,300626.0,395322906.0
+Land in Kacyiru,Gasabo,Kacyiru,1536,dirt,10,82,flat,1,0,188023.0,288802621.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,2233,paved,14,287,steep,1,1,84866.0,189504780.0
+Land in Kibagabaga,Gasabo,Kibagabaga,3773,paved,11,273,gentle,1,1,132921.0,501510957.0
+Land in Gitega,Nyarugenge,Gitega,1290,dirt,21,79,flat,0,1,54314.0,70065080.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,2521,paved,19,496,steep,0,1,39194.0,98806908.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,2874,dirt,31,460,flat,1,1,56833.0,163338096.0
+Land in Gisozi,Gasabo,Gisozi,1905,paved,6,167,flat,0,1,94151.0,179357202.0
+Land in Gitega,Nyarugenge,Gitega,2376,paved,6,275,gentle,0,0,58538.0,139085400.0
+Land in Gisozi,Gasabo,Gisozi,1692,paved,33,483,flat,0,1,51612.0,87326723.0
+Land in Gisozi,Gasabo,Gisozi,3128,paved,1,145,gentle,1,0,76134.0,238146054.0
+Land in Kimihurura,Gasabo,Kimihurura,1866,dirt,29,379,gentle,0,1,167046.0,311708354.0
+Land in Gisozi,Gasabo,Gisozi,3493,paved,6,73,flat,1,0,75020.0,262046392.0
+Land in Kibagabaga,Gasabo,Kibagabaga,641,dirt,25,45,flat,1,0,76663.0,49140854.0
+Land in Kanombe,Kicukiro,Kanombe,3885,dirt,9,102,flat,0,1,70682.0,274599714.0
+Land in Remera,Gasabo,Remera,4894,paved,30,114,flat,0,1,123788.0,605818065.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,3971,paved,19,213,flat,1,1,58300.0,231508683.0
+Land in Kimihurura,Gasabo,Kimihurura,2370,paved,5,306,steep,1,1,258522.0,612696600.0
+Land in Remera,Gasabo,Remera,3999,dirt,8,191,steep,0,1,77229.0,308838255.0
+Land in Gahanga,Kicukiro,Gahanga,579,paved,30,449,steep,1,1,42389.0,24543205.0
+Land in Gisozi,Gasabo,Gisozi,3016,paved,19,271,steep,0,1,55707.0,168012684.0
+Land in Kacyiru,Gasabo,Kacyiru,874,dirt,11,278,gentle,0,1,193047.0,168723174.0
+Land in Remera,Gasabo,Remera,2323,dirt,24,49,steep,0,1,71861.0,166932480.0
+Land in Kanombe,Kicukiro,Kanombe,2405,paved,32,210,gentle,0,1,66646.0,160283827.0
+Land in Kanombe,Kicukiro,Kanombe,1911,dirt,34,433,steep,0,1,37271.0,71224250.0
+Land in Gisozi,Gasabo,Gisozi,3872,dirt,8,419,flat,0,1,47039.0,182136223.0
+Land in Kibagabaga,Gasabo,Kibagabaga,1238,dirt,34,390,gentle,1,1,71842.0,88940604.0
+Land in Kimihurura,Gasabo,Kimihurura,1921,paved,10,352,flat,1,1,380587.0,731107823.0
+Land in Gisozi,Gasabo,Gisozi,1015,paved,31,387,gentle,1,1,68489.0,69516017.0
+Land in Kanombe,Kicukiro,Kanombe,4959,paved,8,465,gentle,1,1,71702.0,355572151.0
+Land in Kimihurura,Gasabo,Kimihurura,1114,dirt,14,300,flat,1,1,222182.0,247510199.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,2372,dirt,23,180,flat,0,1,100704.0,238869094.0
+Land in Kanombe,Kicukiro,Kanombe,4771,paved,1,270,flat,0,0,68275.0,325741464.0
+Land in Gitega,Nyarugenge,Gitega,4500,paved,7,473,flat,0,0,45642.0,205391239.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,4928,paved,7,92,gentle,0,1,146414.0,721528233.0
+Land in Gisozi,Gasabo,Gisozi,1024,dirt,21,63,gentle,1,1,65463.0,67034083.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,2461,dirt,3,42,gentle,1,1,129668.0,319112041.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,2655,dirt,29,115,steep,1,0,54741.0,145338013.0
+Land in Kimihurura,Gasabo,Kimihurura,3996,dirt,24,91,flat,0,1,174270.0,696384895.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,4381,dirt,6,61,flat,1,1,106144.0,465017087.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,1482,paved,13,173,flat,0,0,112763.0,167114831.0
+Land in Gisozi,Gasabo,Gisozi,4188,paved,18,387,steep,0,1,48402.0,202707808.0
+Land in Gisozi,Gasabo,Gisozi,4069,paved,10,393,gentle,1,1,69558.0,283030400.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,1202,paved,4,425,flat,1,1,68526.0,82368746.0
+Land in Gahanga,Kicukiro,Gahanga,2778,paved,7,389,flat,0,1,69318.0,192565090.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,1754,paved,32,251,steep,1,1,80537.0,141261728.0
+Land in Kanombe,Kicukiro,Kanombe,244,dirt,3,220,flat,1,1,87777.0,21417608.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,394,paved,20,452,steep,1,1,75331.0,29680286.0
+Land in Gisozi,Gasabo,Gisozi,4093,dirt,32,337,steep,0,1,28066.0,114874433.0
+Land in Kacyiru,Gasabo,Kacyiru,4250,paved,17,253,steep,0,1,164633.0,699690206.0
+Land in Remera,Gasabo,Remera,2725,paved,3,65,gentle,1,1,173091.0,471673182.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,2895,paved,28,176,gentle,1,1,51541.0,149210035.0
+Land in Gacuriro,Gasabo,Gacuriro,2656,dirt,5,444,gentle,1,1,107964.0,286752768.0
+Land in Nyarutarama,Gasabo,Nyarutarama,3875,dirt,28,290,steep,0,1,161701.0,626589648.0
+Land in Gahanga,Kicukiro,Gahanga,282,dirt,25,292,gentle,1,1,46193.0,13026447.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,1786,paved,33,415,steep,1,1,84872.0,151581283.0
+Land in Gisozi,Gasabo,Gisozi,1752,paved,5,430,steep,1,1,61603.0,107927945.0
+Land in Gahanga,Kicukiro,Gahanga,3393,dirt,6,367,steep,1,1,34509.0,117089664.0
+Land in Gitega,Nyarugenge,Gitega,4450,paved,14,177,flat,0,1,73513.0,327131125.0
+Land in Gisozi,Gasabo,Gisozi,4523,paved,27,205,gentle,0,1,62053.0,280665746.0
+Land in Kacyiru,Gasabo,Kacyiru,252,dirt,34,441,flat,0,1,153638.0,38716779.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,3928,paved,35,414,steep,0,0,57112.0,224337098.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,590,paved,24,236,flat,1,1,168211.0,99244282.0
+Land in Gisozi,Gasabo,Gisozi,3460,paved,5,324,flat,0,1,74979.0,259426251.0
+Land in Kacyiru,Gasabo,Kacyiru,2200,dirt,16,207,flat,1,1,195000.0,428999520.0
+Land in Remera,Gasabo,Remera,3902,paved,28,216,steep,0,1,87094.0,339841112.0
+Land in Nyarutarama,Gasabo,Nyarutarama,2216,dirt,18,337,steep,1,0,170410.0,377627629.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,263,paved,6,160,steep,1,1,122224.0,32145016.0
+Land in Kibagabaga,Gasabo,Kibagabaga,839,paved,9,120,flat,0,1,141905.0,119058346.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,4854,dirt,34,128,gentle,0,1,28270.0,137223445.0
+Land in Gitega,Nyarugenge,Gitega,2667,paved,25,412,steep,0,0,28569.0,76194040.0
+Land in Kimihurura,Gasabo,Kimihurura,1534,paved,18,225,gentle,1,1,312614.0,479550018.0
+Land in Kibagabaga,Gasabo,Kibagabaga,1025,paved,28,243,steep,1,1,99560.0,102049396.0
+Land in Kacyiru,Gasabo,Kacyiru,3073,paved,24,420,gentle,1,0,157586.0,484260298.0
+Land in Nyarugenge Town,Nyarugenge,Nyarugenge Town,547,dirt,16,129,steep,1,1,98617.0,53943416.0
+Land in Gitega,Nyarugenge,Gitega,1099,paved,16,439,gentle,1,0,48687.0,53506803.0
+Land in Remera,Gasabo,Remera,2564,paved,16,152,flat,0,1,161397.0,413821621.0
+Land in Kibagabaga,Gasabo,Kibagabaga,3428,dirt,18,443,flat,0,0,53157.0,182223037.0
+Land in Gisozi,Gasabo,Gisozi,2825,dirt,7,422,flat,0,1,50838.0,143617112.0
+Land in Gahanga,Kicukiro,Gahanga,4586,dirt,30,355,flat,0,1,32789.0,150368918.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,1214,paved,13,321,gentle,1,1,105577.0,128170048.0
+Land in Kanombe,Kicukiro,Kanombe,1165,dirt,27,405,gentle,1,0,38011.0,44282433.0
+Land in Kacyiru,Gasabo,Kacyiru,4958,dirt,19,101,flat,1,1,210126.0,1041804030.0
+Land in Gahanga,Kicukiro,Gahanga,1938,paved,2,472,steep,0,1,57642.0,111710781.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,1724,paved,11,25,gentle,0,1,113006.0,194822631.0
+Land in Kibagabaga,Gasabo,Kibagabaga,1493,dirt,8,7,steep,0,1,91811.0,137073735.0
+Land in Nyamirambo,Nyarugenge,Nyamirambo,4148,paved,14,97,gentle,1,1,58046.0,240776751.0
+Land in Gacuriro,Gasabo,Gacuriro,1865,dirt,19,372,steep,1,1,86180.0,160726355.0
+Land in Nyarutarama,Gasabo,Nyarutarama,2477,dirt,16,316,gentle,0,1,247992.0,614277295.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,802,paved,9,446,gentle,0,1,94632.0,75894520.0
+Land in Gisozi,Gasabo,Gisozi,3567,dirt,17,37,flat,0,1,63002.0,224728818.0
+Land in Kicukiro Center,Kicukiro,Kicukiro Center,3002,dirt,3,2,gentle,0,1,98728.0,296380820.0
