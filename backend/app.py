@@ -17,6 +17,7 @@ from routes.predict_routes import predict_bp
 from routes.auth_routes import auth_bp
 from routes.property_routes import property_bp
 from routes.analytics_routes import analytics_bp
+from routes.admin_routes import admin_bp
 
 
 # ============================================
@@ -81,6 +82,7 @@ app.register_blueprint(predict_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(property_bp)
 app.register_blueprint(analytics_bp)
+app.register_blueprint(admin_bp)
 
 
 # ============================================
