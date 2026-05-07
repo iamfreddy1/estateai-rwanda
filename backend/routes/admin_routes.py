@@ -150,6 +150,42 @@ def recreate_db():
     return jsonify({"ok": True, "message": "All tables dropped and recreated"}), 200
 
 
+# ============================================
+# POST /admin/make-admin
+# ============================================
+# Promote a user (by email) to admin. One-time setup endpoint.
+# Body: { "email": "...", "secret": "<SEED_SECRET>" }
+@admin_bp.route("/admin/make-admin", methods=["POST"])
+def make_admin():
+    expected = os.environ.get("SEED_SECRET")
+    if not expected:
+        return jsonify({"error": "SEED_SECRET not configured"}), 500
+
+    body = request.get_json(silent=True) or {}
+    provided = (
+        request.headers.get("X-Seed-Secret")
+        or request.args.get("secret")
+        or body.get("secret")
+    )
+    if provided != expected:
+        return jsonify({"error": "Invalid or missing secret"}), 401
+
+    email = (body.get("email") or request.args.get("email") or "").strip().lower()
+    if not email:
+        return jsonify({"error": "Missing email"}), 400
+
+    from models.database import User
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"error": f"No user with email {email}"}), 404
+
+    user.is_admin = True
+    user.role = "admin"
+    user.verification_status = "verified"
+    db.session.commit()
+    return jsonify({"ok": True, "user": user.to_dict()}), 200
+
+
 @admin_bp.route("/admin/seed", methods=["POST", "GET"])
 def seed_database():
     # 1. Verify secret - accept any of:

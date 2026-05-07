@@ -176,3 +176,65 @@ def me():
     if not user:
         return jsonify({"error": "User not found"}), 404
     return jsonify({"user": user.to_dict()}), 200
+
+
+# ============================================
+# POST /auth/upload-id   (attach national ID URL, sets status=pending)
+# ============================================
+@auth_bp.route("/auth/upload-id", methods=["POST"])
+@jwt_required()
+def upload_national_id():
+    data = request.get_json(silent=True) or {}
+    url = (data.get("national_id_url") or "").strip()
+    if not url:
+        return jsonify({"error": "Missing national_id_url"}), 400
+
+    user_id = int(get_jwt_identity())
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    user.national_id_url = url
+    user.verification_status = "pending"
+    user.rejection_reason = None
+    db.session.commit()
+    return jsonify({"message": "ID uploaded - awaiting verification", "user": user.to_dict()}), 200
+
+
+# ============================================
+# Admin: verify/reject a user
+# ============================================
+@auth_bp.route("/auth/users/<int:uid>/verify", methods=["POST"])
+@jwt_required()
+def admin_verify_user(uid):
+    from datetime import datetime
+    me_id = int(get_jwt_identity())
+    me_user = User.query.get(me_id)
+    if not me_user or not me_user.is_admin:
+        return jsonify({"error": "Admin access required"}), 403
+    target = User.query.get(uid)
+    if not target:
+        return jsonify({"error": "User not found"}), 404
+    target.verification_status = "verified"
+    target.verified_at = datetime.utcnow()
+    target.rejection_reason = None
+    db.session.commit()
+    return jsonify({"message": "User verified", "user": target.to_dict()}), 200
+
+
+@auth_bp.route("/auth/users/<int:uid>/reject", methods=["POST"])
+@jwt_required()
+def admin_reject_user(uid):
+    me_id = int(get_jwt_identity())
+    me_user = User.query.get(me_id)
+    if not me_user or not me_user.is_admin:
+        return jsonify({"error": "Admin access required"}), 403
+    data = request.get_json(silent=True) or {}
+    reason = (data.get("reason") or "").strip() or "Rejected by admin"
+    target = User.query.get(uid)
+    if not target:
+        return jsonify({"error": "User not found"}), 404
+    target.verification_status = "rejected"
+    target.rejection_reason = reason
+    db.session.commit()
+    return jsonify({"message": "User rejected", "user": target.to_dict()}), 200

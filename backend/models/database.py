@@ -26,6 +26,18 @@ class User(db.Model):
     # Google's stable user ID. Set when user signs in with Google.
     google_sub = db.Column(db.String(64), unique=True, nullable=True, index=True)
     auth_provider = db.Column(db.String(20), default="email")  # "email" or "google"
+
+    # ----- Identity Verification -----
+    national_id_url = db.Column(db.String(500), nullable=True)
+    verification_status = db.Column(db.String(20), default="unverified")
+    # one of: "unverified" | "pending" | "verified" | "rejected"
+    verified_at = db.Column(db.DateTime, nullable=True)
+    rejection_reason = db.Column(db.String(500), nullable=True)
+
+    # ----- Roles -----
+    is_admin = db.Column(db.Boolean, default=False, nullable=False)
+    role = db.Column(db.String(20), default="user")  # "user" | "agent" | "admin"
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     properties = db.relationship(
@@ -56,6 +68,10 @@ class User(db.Model):
             "name": self.name,
             "avatar_url": self.avatar_url,
             "auth_provider": self.auth_provider,
+            "verification_status": self.verification_status,
+            "is_admin": self.is_admin,
+            "role": self.role,
+            "verified_at": self.verified_at.isoformat() if self.verified_at else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
 
@@ -97,15 +113,49 @@ class Property(db.Model):
 
     # ---- Media ----
     image_url = db.Column(db.String(500), nullable=True)
+    # Multiple property photos (JSON array of Cloudinary URLs).
+    # SQLite stores JSON as text - we'll convert in to_dict.
+    images_json = db.Column(db.Text, nullable=True)
+
+    # ---- Verification ----
+    status = db.Column(db.String(20), default="approved", nullable=False)
+    # one of: "pending" | "approved" | "rejected"
+    # Seeded properties default to "approved" so they show up immediately.
+    # User-created listings default to "pending" (set in route).
+    ownership_doc_url = db.Column(db.String(500), nullable=True)
+    rejection_reason = db.Column(db.String(500), nullable=True)
+    approved_at = db.Column(db.DateTime, nullable=True)
 
     # ---- Meta ----
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
     # nullable=True so seeded properties (no owner) can exist
 
+    # ---- Helpers ----
+    def get_images(self):
+        """Return list of image URLs - falls back to image_url if images_json is empty."""
+        import json
+        if self.images_json:
+            try:
+                imgs = json.loads(self.images_json)
+                if isinstance(imgs, list) and imgs:
+                    return imgs
+            except Exception:
+                pass
+        return [self.image_url] if self.image_url else []
+
+    def set_images(self, urls):
+        """Store list of URLs as JSON. Also sets image_url to the first one."""
+        import json
+        if urls:
+            self.images_json = json.dumps(urls)
+            self.image_url = urls[0]
+        else:
+            self.images_json = None
+
     # ---- Serialization ----
-    def to_dict(self):
-        return {
+    def to_dict(self, include_owner_doc=False):
+        data = {
             "id": self.id,
             "title": self.title,
             "price": self.price,
@@ -132,8 +182,17 @@ class Property(db.Model):
             "proximity_to_city": self.proximity_to_city,
 
             "image": self.image_url,
+            "images": self.get_images(),
+
+            "status": self.status,
+            "rejection_reason": self.rejection_reason,
+            "approved_at": self.approved_at.isoformat() if self.approved_at else None,
 
             "user_id": self.user_id,
             "owner_name": (self.owner.name or self.owner.email.split("@")[0]) if self.owner else "EstateAI",
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
+        # ownership_doc_url is sensitive - only include for owner/admin
+        if include_owner_doc:
+            data["ownership_doc_url"] = self.ownership_doc_url
+        return data
