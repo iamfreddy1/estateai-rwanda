@@ -18,6 +18,7 @@ from routes.auth_routes import auth_bp
 from routes.property_routes import property_bp
 from routes.analytics_routes import analytics_bp
 from routes.admin_routes import admin_bp
+from routes.upload_routes import upload_bp
 
 
 # ============================================
@@ -83,6 +84,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(property_bp)
 app.register_blueprint(analytics_bp)
 app.register_blueprint(admin_bp)
+app.register_blueprint(upload_bp)
 
 
 # ============================================
@@ -113,7 +115,14 @@ def home():
 
 @app.route("/health", methods=["GET"])
 def health():
-    return jsonify({"status": "healthy"}), 200
+    return jsonify({
+        "status": "healthy",
+        "config": {
+            "google_oauth": bool(os.environ.get("GOOGLE_CLIENT_IDS")),
+            "cloudinary": bool(os.environ.get("CLOUDINARY_CLOUD_NAME")),
+            "seed_secret_set": bool(os.environ.get("SEED_SECRET")),
+        }
+    }), 200
 
 
 # ============================================
