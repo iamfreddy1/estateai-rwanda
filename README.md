@@ -1,6 +1,6 @@
 # 🏡 EstateAI — AI-Based Property Valuation System
 
-A full-stack Zillow-like real estate platform with **AI-powered price prediction** using a Random Forest model.
+real estate platform with **AI-powered price prediction** using a Random Forest model.
 
 Users can browse property listings, search by location, get instant AI price estimates, sign up / log in, and manage their own listings.
 
