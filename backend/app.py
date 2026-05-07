@@ -19,6 +19,7 @@ from routes.property_routes import property_bp
 from routes.analytics_routes import analytics_bp
 from routes.admin_routes import admin_bp
 from routes.upload_routes import upload_bp
+from routes.chat_routes import chat_bp
 
 
 # ============================================
@@ -85,6 +86,7 @@ app.register_blueprint(property_bp)
 app.register_blueprint(analytics_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(upload_bp)
+app.register_blueprint(chat_bp)
 
 
 # ============================================

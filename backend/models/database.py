@@ -196,3 +196,94 @@ class Property(db.Model):
         if include_owner_doc:
             data["ownership_doc_url"] = self.ownership_doc_url
         return data
+
+
+# ============================================
+# CONVERSATION MODEL
+# ============================================
+# A conversation is between a buyer and seller about a specific property.
+# Uniqueness: one conversation per (property_id, buyer_id, seller_id) triple.
+class Conversation(db.Model):
+    __tablename__ = "conversations"
+
+    id = db.Column(db.Integer, primary_key=True)
+    property_id = db.Column(db.Integer, db.ForeignKey("properties.id"), nullable=False)
+    buyer_id   = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    seller_id  = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_message_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relationships
+    property = db.relationship("Property", backref="conversations")
+    buyer    = db.relationship("User", foreign_keys=[buyer_id])
+    seller   = db.relationship("User", foreign_keys=[seller_id])
+    messages = db.relationship(
+        "Message",
+        backref="conversation",
+        lazy=True,
+        cascade="all, delete-orphan",
+        order_by="Message.created_at",
+    )
+
+    __table_args__ = (
+        db.UniqueConstraint("property_id", "buyer_id", "seller_id", name="uq_convo"),
+    )
+
+    def to_dict(self, current_user_id=None):
+        # Show the "other" user's info from the perspective of current_user_id
+        other = None
+        if current_user_id == self.buyer_id:
+            other = self.seller
+        elif current_user_id == self.seller_id:
+            other = self.buyer
+        last_msg = self.messages[-1] if self.messages else None
+        unread_count = 0
+        if current_user_id:
+            unread_count = sum(
+                1 for m in self.messages
+                if m.sender_id != current_user_id and m.read_at is None
+            )
+        return {
+            "id": self.id,
+            "property_id": self.property_id,
+            "property_title": self.property.title if self.property else None,
+            "property_image": (self.property.image_url if self.property else None),
+            "buyer_id": self.buyer_id,
+            "seller_id": self.seller_id,
+            "other_user": {
+                "id": other.id,
+                "name": other.name or (other.email.split("@")[0] if other.email else None),
+                "avatar_url": other.avatar_url,
+            } if other else None,
+            "last_message": last_msg.content if last_msg else None,
+            "last_message_at": self.last_message_at.isoformat() if self.last_message_at else None,
+            "unread_count": unread_count,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+# ============================================
+# MESSAGE MODEL
+# ============================================
+class Message(db.Model):
+    __tablename__ = "messages"
+
+    id = db.Column(db.Integer, primary_key=True)
+    conversation_id = db.Column(db.Integer, db.ForeignKey("conversations.id"), nullable=False, index=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    read_at = db.Column(db.DateTime, nullable=True)
+
+    sender = db.relationship("User", foreign_keys=[sender_id])
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "conversation_id": self.conversation_id,
+            "sender_id": self.sender_id,
+            "sender_name": (self.sender.name or self.sender.email.split("@")[0]) if self.sender else None,
+            "content": self.content,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "read_at": self.read_at.isoformat() if self.read_at else None,
+        }
