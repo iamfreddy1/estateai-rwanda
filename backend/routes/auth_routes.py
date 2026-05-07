@@ -1,13 +1,18 @@
 # ============================================
 # AUTHENTICATION ROUTES
 # ============================================
-# POST /auth/signup -> create new user
-# POST /auth/login  -> get JWT token
+# POST /auth/signup -> create new user (email/password)
+# POST /auth/login  -> log in (email/password) -> JWT
+# POST /auth/google -> log in / sign up with a Google ID token
 # GET  /auth/me     -> protected, returns current user info
 
+import os
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from sqlalchemy.exc import IntegrityError
+
+from google.oauth2 import id_token as google_id_token
+from google.auth.transport import requests as google_requests
 
 from models.database import db, User
 
@@ -15,62 +20,55 @@ auth_bp = Blueprint("auth", __name__)
 
 
 # ============================================
-# Helper: Validate email looks reasonable
+# Helpers
 # ============================================
 def is_valid_email(email):
     return isinstance(email, str) and "@" in email and "." in email
 
 
+def _allowed_google_audiences():
+    """Comma-separated GOOGLE_CLIENT_IDS env var.
+    Set this on Render to your Web + Android client IDs (any token coming
+    from one of these is trusted)."""
+    raw = os.environ.get("GOOGLE_CLIENT_IDS", "")
+    return [c.strip() for c in raw.split(",") if c.strip()]
+
+
 # ============================================
 # POST /auth/signup
 # ============================================
-# Creates a new user account.
-# Expected JSON: { "email": "...", "password": "...", "name": "..." (optional) }
 @auth_bp.route("/auth/signup", methods=["POST"])
 def signup():
     data = request.get_json(silent=True) or {}
-
     email = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
     name = (data.get("name") or "").strip() or None
 
-    # Validation
     if not is_valid_email(email):
         return jsonify({"error": "Invalid email address"}), 400
     if len(password) < 6:
         return jsonify({"error": "Password must be at least 6 characters"}), 400
 
-    # Create user
-    user = User(email=email, name=name)
+    user = User(email=email, name=name, auth_provider="email")
     user.set_password(password)
 
     try:
         db.session.add(user)
         db.session.commit()
     except IntegrityError:
-        # email already exists (UNIQUE constraint failed)
         db.session.rollback()
         return jsonify({"error": "An account with that email already exists"}), 409
 
-    # Generate a JWT immediately so the user is "logged in" right after signup
     token = create_access_token(identity=str(user.id))
-
-    return jsonify({
-        "message": "Account created successfully",
-        "token": token,
-        "user": user.to_dict(),
-    }), 201
+    return jsonify({"message": "Account created successfully", "token": token, "user": user.to_dict()}), 201
 
 
 # ============================================
 # POST /auth/login
 # ============================================
-# Authenticates an existing user.
-# Expected JSON: { "email": "...", "password": "..." }
 @auth_bp.route("/auth/login", methods=["POST"])
 def login():
     data = request.get_json(silent=True) or {}
-
     email = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
 
@@ -79,13 +77,89 @@ def login():
 
     user = User.query.filter_by(email=email).first()
     if not user or not user.check_password(password):
-        # Don't reveal whether the email exists - just say credentials are bad
         return jsonify({"error": "Invalid email or password"}), 401
 
     token = create_access_token(identity=str(user.id))
+    return jsonify({"message": "Login successful", "token": token, "user": user.to_dict()}), 200
 
+
+# ============================================
+# POST /auth/google
+# ============================================
+# Accepts a Google ID token, verifies it with Google, then creates or
+# logs in the matching user. Returns OUR JWT.
+#
+# Body: { "id_token": "<google id token from the mobile/web client>" }
+@auth_bp.route("/auth/google", methods=["POST"])
+def google_login():
+    data = request.get_json(silent=True) or {}
+    incoming_token = data.get("id_token") or data.get("idToken")
+    if not incoming_token:
+        return jsonify({"error": "Missing id_token"}), 400
+
+    audiences = _allowed_google_audiences()
+    if not audiences:
+        return jsonify({
+            "error": "Server not configured for Google login (GOOGLE_CLIENT_IDS env var missing)"
+        }), 500
+
+    # ---- 1. Verify the token with Google ----
+    # google_id_token.verify_oauth2_token() accepts a single audience.
+    # We try each allowed audience until one matches.
+    payload = None
+    last_err = None
+    for aud in audiences:
+        try:
+            payload = google_id_token.verify_oauth2_token(
+                incoming_token,
+                google_requests.Request(),
+                aud,
+            )
+            break
+        except ValueError as e:
+            last_err = e
+    if payload is None:
+        return jsonify({"error": f"Invalid Google token: {last_err}"}), 401
+
+    # ---- 2. Extract user info ----
+    google_sub = payload.get("sub")
+    email = (payload.get("email") or "").lower()
+    name = payload.get("name") or (email.split("@")[0] if email else None)
+    avatar = payload.get("picture")
+    email_verified = payload.get("email_verified", False)
+
+    if not google_sub or not email:
+        return jsonify({"error": "Google token missing required fields"}), 400
+    if not email_verified:
+        return jsonify({"error": "Google account email is not verified"}), 401
+
+    # ---- 3. Find or create the user ----
+    # Priority: existing google_sub > existing email (link accounts)
+    user = User.query.filter_by(google_sub=google_sub).first()
+    if not user:
+        user = User.query.filter_by(email=email).first()
+        if user:
+            # Link this Google account to the existing email-based account
+            user.google_sub = google_sub
+            if not user.avatar_url:
+                user.avatar_url = avatar
+        else:
+            # Brand new user
+            user = User(
+                email=email,
+                name=name,
+                avatar_url=avatar,
+                google_sub=google_sub,
+                auth_provider="google",
+            )
+            db.session.add(user)
+
+    db.session.commit()
+
+    # ---- 4. Issue OUR JWT ----
+    token = create_access_token(identity=str(user.id))
     return jsonify({
-        "message": "Login successful",
+        "message": "Google login successful",
         "token": token,
         "user": user.to_dict(),
     }), 200
@@ -94,8 +168,6 @@ def login():
 # ============================================
 # GET /auth/me
 # ============================================
-# Returns the current user's info. Requires a valid JWT.
-# This is how the frontend can check "am I logged in?" on page load.
 @auth_bp.route("/auth/me", methods=["GET"])
 @jwt_required()
 def me():

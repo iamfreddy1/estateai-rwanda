@@ -19,8 +19,13 @@ class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
-    password_hash = db.Column(db.String(200), nullable=False)
+    # Nullable now: Google-signed-in users don't have a password.
+    password_hash = db.Column(db.String(200), nullable=True)
     name = db.Column(db.String(80), nullable=True)
+    avatar_url = db.Column(db.String(500), nullable=True)
+    # Google's stable user ID. Set when user signs in with Google.
+    google_sub = db.Column(db.String(64), unique=True, nullable=True, index=True)
+    auth_provider = db.Column(db.String(20), default="email")  # "email" or "google"
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     properties = db.relationship(
@@ -36,6 +41,9 @@ class User(db.Model):
         self.password_hash = hashed.decode("utf-8")
 
     def check_password(self, plain_password):
+        # Google-only users have no password
+        if not self.password_hash:
+            return False
         return bcrypt.checkpw(
             plain_password.encode("utf-8"),
             self.password_hash.encode("utf-8"),
@@ -46,6 +54,8 @@ class User(db.Model):
             "id": self.id,
             "email": self.email,
             "name": self.name,
+            "avatar_url": self.avatar_url,
+            "auth_provider": self.auth_provider,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
 

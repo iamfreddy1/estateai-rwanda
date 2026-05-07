@@ -124,19 +124,56 @@ def _seed_lands(df, max_records=40):
 # ============================================
 # Headers:  X-Seed-Secret: <secret matching SEED_SECRET env var>
 # Body:     (optional) { "force": true }   -> reseed even if data exists
-@admin_bp.route("/admin/seed", methods=["POST"])
+# ============================================
+# POST /admin/recreate-db
+# ============================================
+# DROPS ALL TABLES then re-creates them fresh.
+# Use during early development when models change.
+# Protected by SEED_SECRET. Wipes ALL DATA.
+@admin_bp.route("/admin/recreate-db", methods=["POST"])
+def recreate_db():
+    expected = os.environ.get("SEED_SECRET")
+    if not expected:
+        return jsonify({"error": "SEED_SECRET not configured"}), 500
+
+    body = request.get_json(silent=True) or {}
+    provided = (
+        request.headers.get("X-Seed-Secret")
+        or request.args.get("secret")
+        or body.get("secret")
+    )
+    if provided != expected:
+        return jsonify({"error": "Invalid or missing secret"}), 401
+
+    db.drop_all()
+    db.create_all()
+    return jsonify({"ok": True, "message": "All tables dropped and recreated"}), 200
+
+
+@admin_bp.route("/admin/seed", methods=["POST", "GET"])
 def seed_database():
-    # 1. Verify secret
+    # 1. Verify secret - accept any of:
+    #    - Header:        X-Seed-Secret: <secret>
+    #    - Query param:   ?secret=<secret>
+    #    - JSON body:     { "secret": "<secret>" }
     expected = os.environ.get("SEED_SECRET")
     if not expected:
         return jsonify({"error": "SEED_SECRET not configured on server"}), 500
 
-    provided = request.headers.get("X-Seed-Secret")
-    if provided != expected:
-        return jsonify({"error": "Invalid or missing X-Seed-Secret header"}), 401
-
     body = request.get_json(silent=True) or {}
-    force = bool(body.get("force"))
+    provided = (
+        request.headers.get("X-Seed-Secret")
+        or request.args.get("secret")
+        or body.get("secret")
+    )
+
+    if provided != expected:
+        return jsonify({
+            "error": "Invalid or missing secret",
+            "hint": "Pass via header X-Seed-Secret, ?secret=..., or JSON body {\"secret\": \"...\"}",
+        }), 401
+
+    force = bool(body.get("force") or request.args.get("force"))
 
     # 2. Idempotency check - don't double-seed
     existing_seeded = Property.query.filter_by(user_id=None).count()
