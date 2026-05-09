@@ -4,83 +4,6 @@ real estate platform with **AI-powered price prediction** using a Random Forest 
 
 Users can browse property listings, search by location, get instant AI price estimates, sign up / log in, and manage their own listings.
 
----
-
-## ✨ Features
-
-- 🔐 **Authentication** — JWT-based signup, login, and persistent sessions
-- 🏠 **Property Listings** — Browse, search, create, and delete listings (CRUD)
-- 🤖 **AI Price Prediction** — Random Forest model trained on 200+ property records
-- 🔍 **Search & Filter** — Filter by type (buy/rent) and location with URL params
-- 🎨 **Modern UI** — Zillow-style React app with Tailwind CSS
-- 🛣️ **Multi-Page Navigation** — Real routing with React Router
-- 📱 **Responsive Design** — Works on mobile, tablet, and desktop
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | React 19 + Vite + Tailwind CSS + React Router |
-| **Backend** | Python Flask + Flask-JWT-Extended + SQLAlchemy |
-| **Database** | SQLite |
-| **AI Model** | scikit-learn (Random Forest Regressor) |
-| **Auth** | Bcrypt password hashing + JWT tokens |
-
----
-
-## 📁 Project Structure
-
-```
-ai-property-valuation/
-├── backend/
-│   ├── app.py                   # Main Flask entry point
-│   ├── requirements.txt         # Python dependencies
-│   ├── estate.db                # SQLite database (auto-created)
-│   ├── test_api.py              # Automated API tests
-│   ├── models/
-│   │   └── database.py          # User + Property models
-│   ├── routes/
-│   │   ├── auth_routes.py       # Signup / Login / /me
-│   │   ├── predict_routes.py    # AI prediction endpoint
-│   │   └── property_routes.py   # Property CRUD
-│   ├── ml/
-│   │   ├── generate_dataset.py  # Creates synthetic training data
-│   │   ├── train_model.py       # Trains the Random Forest
-│   │   └── model.pkl            # Saved trained model
-│   └── data/
-│       └── properties.csv       # Synthetic training dataset
-│
-└── frontend/
-    ├── package.json
-    ├── vite.config.js
-    └── src/
-        ├── main.jsx             # React + BrowserRouter entry
-        ├── App.jsx              # Layout + routes
-        ├── auth.js              # Auth API helpers
-        ├── properties.js        # Property API helpers
-        ├── pages/
-        │   ├── Home.jsx
-        │   ├── Buy.jsx
-        │   ├── Rent.jsx
-        │   ├── Sell.jsx
-        │   └── NotFound.jsx
-        └── components/
-            ├── Navbar.jsx
-            ├── Hero.jsx
-            ├── Footer.jsx
-            ├── PropertyGrid.jsx
-            ├── PropertyCard.jsx
-            ├── PredictModal.jsx
-            ├── AuthModal.jsx
-            └── AddPropertyModal.jsx
-```
-
----
-
-## 🚀 Setup
-
 ### Prerequisites
 - Python 3.10+
 - Node.js 18+
@@ -163,4 +86,4 @@ python test_api.py
 
 ## 📜 License
 
-Educational project. Free to use and modify.
+Beta to real estate Business project
