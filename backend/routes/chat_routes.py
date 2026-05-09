@@ -167,7 +167,13 @@ def send_message(cid):
     db.session.add(msg)
     db.session.commit()
 
-    # Step 2 will also broadcast over Socket.IO here.
+    # Push to anyone connected via WebSocket
+    try:
+        from socketio_app import broadcast_new_message
+        broadcast_new_message(msg, convo)
+    except Exception:
+        pass    # Socket failure shouldn't break REST
+
     return jsonify({"message": msg.to_dict()}), 201
 
 

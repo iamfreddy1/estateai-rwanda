@@ -7,6 +7,11 @@
 #   JWT_SECRET_KEY  -> required in production
 #   FLASK_ENV       -> "production" or "development"
 
+# IMPORTANT: eventlet must be imported and monkey-patched FIRST,
+# before anything else uses the standard library (notably ssl/threading).
+import eventlet
+eventlet.monkey_patch()
+
 import os
 from flask import Flask, jsonify
 from flask_cors import CORS
@@ -20,6 +25,7 @@ from routes.analytics_routes import analytics_bp
 from routes.admin_routes import admin_bp
 from routes.upload_routes import upload_bp
 from routes.chat_routes import chat_bp
+from socketio_app import init_socketio
 
 
 # ============================================
@@ -67,6 +73,7 @@ app.config["JWT_SECRET_KEY"] = jwt_secret
 # ============================================
 db.init_app(app)
 jwt = JWTManager(app)
+socketio = init_socketio(app)
 
 
 # ============================================
@@ -133,4 +140,5 @@ def health():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     debug = os.environ.get("FLASK_ENV") != "production"
-    app.run(debug=debug, host="0.0.0.0", port=port)
+    # Use socketio.run instead of app.run so WebSockets work in dev too
+    socketio.run(app, debug=debug, host="0.0.0.0", port=port)
