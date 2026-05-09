@@ -172,7 +172,25 @@ def send_message(cid):
         from socketio_app import broadcast_new_message
         broadcast_new_message(msg, convo)
     except Exception:
-        pass    # Socket failure shouldn't break REST
+        pass
+
+    # Send push notification to the recipient
+    try:
+        from push_notifications import send_push_to_user
+        recipient = convo.seller if user_id == convo.buyer_id else convo.buyer
+        sender_name = (msg.sender.name or msg.sender.email.split("@")[0]) if msg.sender else "Someone"
+        send_push_to_user(
+            recipient,
+            title=sender_name,
+            body=content if len(content) <= 100 else content[:97] + "...",
+            data={
+                "type": "new_message",
+                "conversation_id": convo.id,
+                "property_title": convo.property.title if convo.property else None,
+            },
+        )
+    except Exception:
+        pass
 
     return jsonify({"message": msg.to_dict()}), 201
 

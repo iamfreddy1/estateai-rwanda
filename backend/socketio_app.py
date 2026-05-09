@@ -155,6 +155,24 @@ def handle_send_message(data):
         room=f"user:{other_id}",
     )
 
+    # Push notification to the recipient (works even if they have the app closed)
+    try:
+        from push_notifications import send_push_to_user
+        recipient = convo.seller if user_id == convo.buyer_id else convo.buyer
+        sender_name = (msg.sender.name or msg.sender.email.split("@")[0]) if msg.sender else "Someone"
+        send_push_to_user(
+            recipient,
+            title=sender_name,
+            body=content if len(content) <= 100 else content[:97] + "...",
+            data={
+                "type": "new_message",
+                "conversation_id": convo.id,
+                "property_title": convo.property.title if convo.property else None,
+            },
+        )
+    except Exception:
+        pass
+
 
 # ============================================
 # Initialization helper

@@ -179,6 +179,30 @@ def me():
 
 
 # ============================================
+# POST /auth/push-token   (register Expo push token)
+# ============================================
+@auth_bp.route("/auth/push-token", methods=["POST"])
+@jwt_required()
+def register_push_token():
+    from datetime import datetime
+    data = request.get_json(silent=True) or {}
+    token = (data.get("token") or "").strip()
+    # Allow empty string to UNregister (e.g. on logout from this device)
+    if token and not token.startswith("ExponentPushToken"):
+        return jsonify({"error": "Invalid Expo push token format"}), 400
+
+    user_id = int(get_jwt_identity())
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    user.expo_push_token = token or None
+    user.push_token_updated_at = datetime.utcnow()
+    db.session.commit()
+    return jsonify({"ok": True}), 200
+
+
+# ============================================
 # POST /auth/upload-id   (attach national ID URL, sets status=pending)
 # ============================================
 @auth_bp.route("/auth/upload-id", methods=["POST"])

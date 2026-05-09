@@ -38,6 +38,10 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
     role = db.Column(db.String(20), default="user")  # "user" | "agent" | "admin"
 
+    # ----- Push notifications -----
+    expo_push_token = db.Column(db.String(200), nullable=True)
+    push_token_updated_at = db.Column(db.DateTime, nullable=True)
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     properties = db.relationship(
