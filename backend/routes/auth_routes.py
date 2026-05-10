@@ -226,6 +226,35 @@ def upload_national_id():
 
 
 # ============================================
+# GET /auth/users/pending  (admin only)
+# ============================================
+@auth_bp.route("/auth/users/pending", methods=["GET"])
+@jwt_required()
+def admin_list_pending_users():
+    me_id = int(get_jwt_identity())
+    me_user = User.query.get(me_id)
+    if not me_user or not me_user.is_admin:
+        return jsonify({"error": "Admin access required"}), 403
+
+    users = (
+        User.query
+        .filter(User.verification_status == "pending")
+        .order_by(User.created_at.desc())
+        .all()
+    )
+    return jsonify({
+        "count": len(users),
+        "users": [
+            {
+                **u.to_dict(),
+                "national_id_url": u.national_id_url,
+            }
+            for u in users
+        ],
+    }), 200
+
+
+# ============================================
 # Admin: verify/reject a user
 # ============================================
 @auth_bp.route("/auth/users/<int:uid>/verify", methods=["POST"])
