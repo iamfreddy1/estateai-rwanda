@@ -226,6 +226,125 @@ def upload_national_id():
 
 
 # ============================================
+# POST /auth/agent/apply
+# ============================================
+# User submits an agent application. Sets agent_status to "pending".
+# Body: { agency_name, license_number, phone, bio, areas, license_doc_url? }
+@auth_bp.route("/auth/agent/apply", methods=["POST"])
+@jwt_required()
+def apply_as_agent():
+    user_id = int(get_jwt_identity())
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json(silent=True) or {}
+    agency = (data.get("agency_name") or "").strip()
+    license_no = (data.get("license_number") or "").strip()
+    phone = (data.get("phone") or "").strip()
+    bio = (data.get("bio") or "").strip()
+    areas = (data.get("areas") or "").strip()
+    license_doc = (data.get("license_doc_url") or "").strip() or None
+
+    if not agency or not license_no or not phone:
+        return jsonify({"error": "agency_name, license_number and phone are required"}), 400
+
+    user.agency_name = agency
+    user.license_number = license_no
+    user.phone = phone
+    user.bio = bio or None
+    user.areas = areas or None
+    user.license_doc_url = license_doc
+    user.agent_status = "pending"
+    user.agent_rejection_reason = None
+    db.session.commit()
+    return jsonify({"message": "Application submitted - awaiting admin review", "user": user.to_dict()}), 200
+
+
+# ============================================
+# GET /auth/agents/pending  (admin only)
+# ============================================
+@auth_bp.route("/auth/agents/pending", methods=["GET"])
+@jwt_required()
+def admin_list_pending_agents():
+    me_id = int(get_jwt_identity())
+    me_user = User.query.get(me_id)
+    if not me_user or not me_user.is_admin:
+        return jsonify({"error": "Admin access required"}), 403
+
+    users = (
+        User.query
+        .filter(User.agent_status == "pending")
+        .order_by(User.created_at.desc())
+        .all()
+    )
+    return jsonify({
+        "count": len(users),
+        "users": [{**u.to_dict(), "license_doc_url": u.license_doc_url} for u in users],
+    }), 200
+
+
+# ============================================
+# POST /auth/agents/<id>/approve  | /reject
+# ============================================
+@auth_bp.route("/auth/agents/<int:uid>/approve", methods=["POST"])
+@jwt_required()
+def admin_approve_agent(uid):
+    me_id = int(get_jwt_identity())
+    me_user = User.query.get(me_id)
+    if not me_user or not me_user.is_admin:
+        return jsonify({"error": "Admin access required"}), 403
+    target = User.query.get(uid)
+    if not target:
+        return jsonify({"error": "User not found"}), 404
+    target.agent_status = "approved"
+    target.role = "agent"
+    target.agent_rejection_reason = None
+    db.session.commit()
+    return jsonify({"message": "Agent approved", "user": target.to_dict()}), 200
+
+
+@auth_bp.route("/auth/agents/<int:uid>/reject", methods=["POST"])
+@jwt_required()
+def admin_reject_agent(uid):
+    me_id = int(get_jwt_identity())
+    me_user = User.query.get(me_id)
+    if not me_user or not me_user.is_admin:
+        return jsonify({"error": "Admin access required"}), 403
+    data = request.get_json(silent=True) or {}
+    reason = (data.get("reason") or "").strip() or "Application rejected"
+    target = User.query.get(uid)
+    if not target:
+        return jsonify({"error": "User not found"}), 404
+    target.agent_status = "rejected"
+    target.agent_rejection_reason = reason
+    db.session.commit()
+    return jsonify({"message": "Agent rejected", "user": target.to_dict()}), 200
+
+
+# ============================================
+# GET /agents/<id>  (public profile)
+# ============================================
+@auth_bp.route("/agents/<int:uid>", methods=["GET"])
+def public_agent_profile(uid):
+    user = User.query.get(uid)
+    if not user or user.agent_status != "approved":
+        return jsonify({"error": "Agent not found"}), 404
+    # Eager-load their listings
+    from models.database import Property
+    listings = (
+        Property.query
+        .filter(Property.user_id == uid, Property.status == "approved")
+        .order_by(Property.created_at.desc())
+        .all()
+    )
+    return jsonify({
+        "agent": user.to_dict(),
+        "listings": [p.to_dict() for p in listings],
+    }), 200
+
+
+# ============================================
 # GET /auth/users/pending  (admin only)
 # ============================================
 @auth_bp.route("/auth/users/pending", methods=["GET"])

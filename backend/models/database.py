@@ -42,6 +42,16 @@ class User(db.Model):
     expo_push_token = db.Column(db.String(200), nullable=True)
     push_token_updated_at = db.Column(db.DateTime, nullable=True)
 
+    # ----- Agent profile (filled when user applies) -----
+    agency_name = db.Column(db.String(120), nullable=True)
+    license_number = db.Column(db.String(80), nullable=True)
+    license_doc_url = db.Column(db.String(500), nullable=True)
+    bio = db.Column(db.Text, nullable=True)
+    phone = db.Column(db.String(40), nullable=True)
+    areas = db.Column(db.String(300), nullable=True)        # comma-separated sectors
+    agent_status = db.Column(db.String(20), default="none") # none/pending/approved/rejected
+    agent_rejection_reason = db.Column(db.String(500), nullable=True)
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     properties = db.relationship(
@@ -75,6 +85,14 @@ class User(db.Model):
             "verification_status": self.verification_status,
             "is_admin": self.is_admin,
             "role": self.role,
+            "is_agent": self.agent_status == "approved",
+            "agent_status": self.agent_status,
+            "agency_name": self.agency_name,
+            "phone": self.phone,
+            "bio": self.bio,
+            "areas": self.areas,
+            "license_number": self.license_number,
+            "agent_rejection_reason": self.agent_rejection_reason,
             "verified_at": self.verified_at.isoformat() if self.verified_at else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
@@ -194,6 +212,9 @@ class Property(db.Model):
 
             "user_id": self.user_id,
             "owner_name": (self.owner.name or self.owner.email.split("@")[0]) if self.owner else "EstateAI",
+            "owner_is_agent": self.owner.agent_status == "approved" if self.owner else False,
+            "owner_agency": self.owner.agency_name if self.owner else None,
+            "owner_avatar": self.owner.avatar_url if self.owner else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
         # ownership_doc_url is sensitive - only include for owner/admin
