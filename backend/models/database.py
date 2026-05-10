@@ -312,3 +312,23 @@ class Message(db.Model):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "read_at": self.read_at.isoformat() if self.read_at else None,
         }
+
+
+# ============================================
+# PROPERTY VIEW MODEL  (for trending + recommendations)
+# ============================================
+class PropertyView(db.Model):
+    __tablename__ = "property_views"
+
+    id = db.Column(db.Integer, primary_key=True)
+    property_id = db.Column(db.Integer, db.ForeignKey("properties.id"), nullable=False, index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True, index=True)  # null = anonymous
+    viewed_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
+    # Snapshot of property attributes at view-time (helps recommendations
+    # build a profile of what the user likes, even if listings get deleted).
+    sector = db.Column(db.String(80), nullable=True)
+    district = db.Column(db.String(80), nullable=True)
+    property_type = db.Column(db.String(40), nullable=True)
+    type = db.Column(db.String(20), nullable=True)        # buy / rent
+    price = db.Column(db.Float, nullable=True)

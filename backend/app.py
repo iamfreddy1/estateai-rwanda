@@ -25,6 +25,7 @@ from routes.analytics_routes import analytics_bp
 from routes.admin_routes import admin_bp
 from routes.upload_routes import upload_bp
 from routes.chat_routes import chat_bp
+from routes.insights_routes import insights_bp
 from socketio_app import init_socketio
 
 
@@ -94,6 +95,7 @@ app.register_blueprint(analytics_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(upload_bp)
 app.register_blueprint(chat_bp)
+app.register_blueprint(insights_bp)
 
 
 # ============================================
