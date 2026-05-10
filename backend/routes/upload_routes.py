@@ -59,12 +59,19 @@ def upload_image():
             folder=f"estateai/users/{user_id}/properties",
             resource_type="image",
             transformation=[
-                {"width": 1600, "height": 1600, "crop": "limit"},  # cap dimensions
-                {"quality": "auto:good"},                          # auto compression
+                {"width": 1600, "height": 1600, "crop": "limit"},
+                {"quality": "auto:good"},
             ],
         )
     except Exception as e:
-        return jsonify({"error": f"Upload failed: {e}"}), 500
+        # Log the FULL exception server-side and surface a meaningful client message
+        import traceback
+        print(f"[upload/image] Cloudinary upload failed for user {user_id}: {e}")
+        print(traceback.format_exc())
+        return jsonify({
+            "error": f"Upload failed: {str(e)[:200]}",
+            "hint": "Check that Cloudinary env vars are set on Render and your image is a valid JPEG/PNG.",
+        }), 500
 
     return jsonify({
         "url": result.get("secure_url"),
@@ -103,14 +110,20 @@ def upload_document():
         result = cloudinary.uploader.upload(
             file,
             folder=f"estateai/users/{user_id}/documents/{doc_type}",
-            resource_type="auto",  # accept image OR PDF
+            resource_type="auto",
             transformation=[
                 {"width": 2000, "height": 2000, "crop": "limit"},
                 {"quality": "auto:good"},
             ],
         )
     except Exception as e:
-        return jsonify({"error": f"Upload failed: {e}"}), 500
+        import traceback
+        print(f"[upload/document] Cloudinary upload failed for user {user_id}, doc_type={doc_type}: {e}")
+        print(traceback.format_exc())
+        return jsonify({
+            "error": f"Upload failed: {str(e)[:200]}",
+            "hint": "Verify CLOUDINARY_* env vars on Render.",
+        }), 500
 
     return jsonify({
         "url": result.get("secure_url"),

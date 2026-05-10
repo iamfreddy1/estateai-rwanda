@@ -67,6 +67,9 @@ if not jwt_secret:
         )
     jwt_secret = "dev-secret-change-me"  # only for local dev
 app.config["JWT_SECRET_KEY"] = jwt_secret
+# Long-lived access tokens for mobile (no refresh-token UX in v1)
+from datetime import timedelta
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=30)
 
 
 # ============================================
