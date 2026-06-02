@@ -64,3 +64,16 @@ export async function adminRejectPropertyApi(propertyId, reason) {
   const res = await apiClient.post(`/properties/${propertyId}/reject`, { reason });
   return res.data.property;
 }
+
+
+// ---------- PUT /properties/<id> (owner or admin) ----------
+export async function updatePropertyApi(id, payload) {
+  const { data } = await apiClient.put(`/properties/${id}`, payload);
+  return data;     // { property, changed }
+}
+
+// ---------- GET /properties/<id>/similar ----------
+export async function getSimilarPropertiesApi(id) {
+  const { data } = await apiClient.get(`/properties/${id}/similar`);
+  return data.similar || [];
+}

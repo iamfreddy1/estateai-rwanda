@@ -4,7 +4,8 @@
 // Wraps localStorage to manage the JWT token + cached user info.
 // Also provides API helpers for signup, login, and "who am I?".
 
-const API_URL = "http://localhost:5000";
+//const API_URL = "http://localhost:5000";
+const API_URL = "http://127.0.0.1:5000";
 const TOKEN_KEY = "estateai_token";
 const USER_KEY = "estateai_user";
 

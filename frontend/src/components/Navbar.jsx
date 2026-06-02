@@ -57,6 +57,9 @@ function Navbar({
           <NavLink to="/estimate-house" className={navLinkClass}>🏠 House Estimate</NavLink>
           <NavLink to="/estimate-land" className={navLinkClass}>🌳 Land Estimate</NavLink>
           <NavLink to="/dashboard" className={navLinkClass}>📊 Dashboard</NavLink>
+          {user?.is_admin && (
+            <NavLink to="/admin" className={navLinkClass}>🛡 Admin</NavLink>
+          )}
         </div>
 
         {/* AUTH AREA */}

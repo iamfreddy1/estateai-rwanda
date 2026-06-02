@@ -8,13 +8,15 @@
 
 import os
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required,
+                                get_jwt_identity, get_jwt, verify_jwt_in_request)
 from sqlalchemy.exc import IntegrityError
 
 from google.oauth2 import id_token as google_id_token
 from google.auth.transport import requests as google_requests
 
 from models.database import db, User
+from extensions import limiter
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -38,6 +40,7 @@ def _allowed_google_audiences():
 # POST /auth/signup
 # ============================================
 @auth_bp.route("/auth/signup", methods=["POST"])
+@limiter.limit("5 per minute")
 def signup():
     data = request.get_json(silent=True) or {}
     email = (data.get("email") or "").strip().lower()
@@ -59,14 +62,17 @@ def signup():
         db.session.rollback()
         return jsonify({"error": "An account with that email already exists"}), 409
 
-    token = create_access_token(identity=str(user.id))
-    return jsonify({"message": "Account created successfully", "token": token, "user": user.to_dict()}), 201
+    access = create_access_token(identity=str(user.id))
+    refresh = create_refresh_token(identity=str(user.id))
+    return jsonify({"message": "Account created successfully", "token": access,
+                    "refresh_token": refresh, "user": user.to_dict()}), 201
 
 
 # ============================================
 # POST /auth/login
 # ============================================
 @auth_bp.route("/auth/login", methods=["POST"])
+@limiter.limit("10 per minute")
 def login():
     data = request.get_json(silent=True) or {}
     email = (data.get("email") or "").strip().lower()
@@ -79,8 +85,10 @@ def login():
     if not user or not user.check_password(password):
         return jsonify({"error": "Invalid email or password"}), 401
 
-    token = create_access_token(identity=str(user.id))
-    return jsonify({"message": "Login successful", "token": token, "user": user.to_dict()}), 200
+    access = create_access_token(identity=str(user.id))
+    refresh = create_refresh_token(identity=str(user.id))
+    return jsonify({"message": "Login successful", "token": access,
+                    "refresh_token": refresh, "user": user.to_dict()}), 200
 
 
 # ============================================
@@ -91,6 +99,7 @@ def login():
 #
 # Body: { "id_token": "<google id token from the mobile/web client>" }
 @auth_bp.route("/auth/google", methods=["POST"])
+@limiter.limit("10 per minute")
 def google_login():
     data = request.get_json(silent=True) or {}
     incoming_token = data.get("id_token") or data.get("idToken")
@@ -156,11 +165,13 @@ def google_login():
 
     db.session.commit()
 
-    # ---- 4. Issue OUR JWT ----
-    token = create_access_token(identity=str(user.id))
+    # ---- 4. Issue OUR JWT pair ----
+    access = create_access_token(identity=str(user.id))
+    refresh = create_refresh_token(identity=str(user.id))
     return jsonify({
         "message": "Google login successful",
-        "token": token,
+        "token": access,
+        "refresh_token": refresh,
         "user": user.to_dict(),
     }), 200
 
@@ -410,3 +421,187 @@ def admin_reject_user(uid):
     target.rejection_reason = reason
     db.session.commit()
     return jsonify({"message": "User rejected", "user": target.to_dict()}), 200
+
+
+
+# ============================================
+# POST /auth/refresh  - swap a refresh token for a fresh access token
+# ============================================
+@auth_bp.route("/auth/refresh", methods=["POST"])
+@jwt_required(refresh=True)
+def refresh():
+    uid = get_jwt_identity()
+    new_access = create_access_token(identity=str(uid))
+    return jsonify({"token": new_access}), 200
+
+
+# ============================================
+# POST /auth/logout  - revoke the refresh token server-side
+# ============================================
+@auth_bp.route("/auth/logout", methods=["POST"])
+@jwt_required(refresh=True)
+def logout_revoke():
+    from models.database import RevokedToken
+    jti = get_jwt().get("jti")
+    if jti:
+        db.session.add(RevokedToken(jti=jti))
+        db.session.commit()
+    return jsonify({"ok": True}), 200
+
+
+
+# ============================================
+# POST /auth/forgot-password   (rate-limited; non-enumerating)
+# ============================================
+# Body: { "email": "..." }
+# Always returns 200 - we never tell attackers whether an email exists.
+@auth_bp.route("/auth/forgot-password", methods=["POST"])
+@limiter.limit("3 per minute")
+def forgot_password():
+    import secrets
+    import bcrypt
+    from datetime import datetime, timedelta
+    from models.database import PasswordResetCode
+    from services.mail import send_password_reset
+
+    data = request.get_json(silent=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    if not is_valid_email(email):
+        return jsonify({"error": "Invalid email"}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if user and user.password_hash:   # only email-auth users (skip pure-Google accounts)
+        # 6-digit code; bcrypt-hashed before storage
+        code = f"{secrets.randbelow(1_000_000):06d}"
+        code_hash = bcrypt.hashpw(code.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+        rec = PasswordResetCode(
+            user_id=user.id, code_hash=code_hash,
+            expires_at=datetime.utcnow() + timedelta(minutes=30),
+        )
+        db.session.add(rec)
+        db.session.commit()
+        send_password_reset(email, user.name, code)
+    # Always return 200 regardless of whether the user exists
+    return jsonify({"message": "If that email is registered, a reset code is on its way."}), 200
+
+
+# ============================================
+# POST /auth/reset-password   (rate-limited)
+# ============================================
+# Body: { "email": "...", "code": "123456", "new_password": "..." }
+@auth_bp.route("/auth/reset-password", methods=["POST"])
+@limiter.limit("5 per minute")
+def reset_password():
+    import bcrypt
+    from datetime import datetime
+    from models.database import PasswordResetCode
+
+    data = request.get_json(silent=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    code = (data.get("code") or "").strip()
+    new_password = data.get("new_password") or ""
+
+    if not is_valid_email(email) or not code:
+        return jsonify({"error": "Email and code are required"}), 400
+    if len(new_password) < 6:
+        return jsonify({"error": "New password must be at least 6 characters"}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"error": "Invalid code or email"}), 400
+
+    # find any non-used, non-expired code for this user; check newest first
+    candidates = (
+        PasswordResetCode.query
+        .filter(PasswordResetCode.user_id == user.id, PasswordResetCode.used_at.is_(None),
+                PasswordResetCode.expires_at > datetime.utcnow())
+        .order_by(PasswordResetCode.id.desc()).limit(5).all()
+    )
+    matched = None
+    for rec in candidates:
+        try:
+            if bcrypt.checkpw(code.encode("utf-8"), rec.code_hash.encode("utf-8")):
+                matched = rec
+                break
+        except Exception:
+            continue
+    if not matched:
+        return jsonify({"error": "Invalid or expired code"}), 400
+
+    # apply password change + burn the code
+    user.set_password(new_password)
+    matched.used_at = datetime.utcnow()
+    db.session.commit()
+    return jsonify({"message": "Password reset successful. Please log in."}), 200
+
+
+def _send_verification_code(user):
+    """Generate + email a 6-digit verification code. Best-effort (never raises)."""
+    try:
+        import secrets, bcrypt
+        from datetime import datetime, timedelta
+        from models.database import EmailVerificationCode
+        from services.mail import send
+        code = f"{secrets.randbelow(1_000_000):06d}"
+        h = bcrypt.hashpw(code.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+        rec = EmailVerificationCode(
+            user_id=user.id, code_hash=h,
+            expires_at=datetime.utcnow() + timedelta(hours=24),
+        )
+        db.session.add(rec); db.session.commit()
+        body = (
+            f"Welcome to EstateAI Rwanda!\n\n"
+            f"Your email verification code is:\n\n    {code}\n\n"
+            f"It expires in 24 hours. Open the app and enter the code to verify your email.\n\n"
+            f"— EstateAI Rwanda"
+        )
+        send(user.email, "Verify your EstateAI Rwanda email", body)
+    except Exception as e:
+        import logging; logging.getLogger("auth").exception("verification email failed: %s", e)
+
+
+@auth_bp.route("/auth/verify-email", methods=["POST"])
+@jwt_required()
+def verify_email():
+    """Body: {code: '123456'}"""
+    import bcrypt
+    from datetime import datetime
+    from models.database import EmailVerificationCode
+    uid = int(get_jwt_identity())
+    user = User.query.get(uid)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    if user.email_verified:
+        return jsonify({"ok": True, "already_verified": True}), 200
+    code = (request.get_json(silent=True) or {}).get("code", "").strip()
+    if not code:
+        return jsonify({"error": "Code is required"}), 400
+    recs = (EmailVerificationCode.query
+            .filter(EmailVerificationCode.user_id == user.id,
+                    EmailVerificationCode.used_at.is_(None),
+                    EmailVerificationCode.expires_at > datetime.utcnow())
+            .order_by(EmailVerificationCode.id.desc()).limit(5).all())
+    for r in recs:
+        try:
+            if bcrypt.checkpw(code.encode(), r.code_hash.encode()):
+                user.email_verified = True
+                r.used_at = datetime.utcnow()
+                db.session.commit()
+                return jsonify({"ok": True, "user": user.to_dict()}), 200
+        except Exception:
+            continue
+    return jsonify({"error": "Invalid or expired code"}), 400
+
+
+@auth_bp.route("/auth/resend-verification", methods=["POST"])
+@jwt_required()
+@limiter.limit("3 per minute")
+def resend_verification():
+    uid = int(get_jwt_identity())
+    user = User.query.get(uid)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    if user.email_verified:
+        return jsonify({"ok": True, "already_verified": True}), 200
+    _send_verification_code(user)
+    return jsonify({"ok": True}), 200

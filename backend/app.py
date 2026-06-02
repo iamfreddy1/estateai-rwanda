@@ -17,7 +17,10 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
+from extensions import limiter
 from models.database import db
+from logging_setup import init_logging
+from error_handlers import init_error_handlers
 from routes.predict_routes import predict_bp
 from routes.auth_routes import auth_bp
 from routes.property_routes import property_bp
@@ -26,6 +29,9 @@ from routes.admin_routes import admin_bp
 from routes.upload_routes import upload_bp
 from routes.chat_routes import chat_bp
 from routes.insights_routes import insights_bp
+from routes.ai_chat_routes import ai_chat_bp
+from routes.admin_dashboard_routes import admin_dash_bp
+from routes.rental_routes import rental_bp
 from socketio_app import init_socketio
 
 
@@ -33,7 +39,8 @@ from socketio_app import init_socketio
 # CREATE THE FLASK APP
 # ============================================
 app = Flask(__name__)
-CORS(app)
+_origins = [o.strip() for o in os.environ.get("ALLOWED_ORIGINS", "http://localhost:5173").split(",") if o.strip()]
+CORS(app, resources={r"/*": {"origins": _origins}})  # locked down (was wide-open)
 
 # ============================================
 # CONFIGURATION
@@ -61,22 +68,42 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # Read from env in production; warn if using fallback locally.
 jwt_secret = os.environ.get("JWT_SECRET_KEY")
 if not jwt_secret:
-    if os.environ.get("FLASK_ENV") == "production":
-        raise RuntimeError(
-            "JWT_SECRET_KEY environment variable is required in production!"
-        )
-    jwt_secret = "dev-secret-change-me"  # only for local dev
+    # Only allow the insecure fallback for an explicit LOCAL sqlite run.
+    # Any non-sqlite (i.e. real/prod) DB without a secret is a hard error -
+    # this no longer silently depends on FLASK_ENV being set.
+    if db_url.startswith("sqlite"):
+        jwt_secret = "dev-secret-change-me"  # local dev only
+    else:
+        raise RuntimeError("JWT_SECRET_KEY is required when not running local SQLite")
 app.config["JWT_SECRET_KEY"] = jwt_secret
 # Long-lived access tokens for mobile (no refresh-token UX in v1)
 from datetime import timedelta
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=30)
+# Production auth: short-lived access tokens + long-lived refresh tokens.
+# Access token = 1 hour (limits stolen-token blast radius)
+# Refresh token = 30 days (kept in mobile secure storage; revocable server-side)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 
 
 # ============================================
 # INITIALIZE EXTENSIONS
 # ============================================
+init_logging(app)
 db.init_app(app)
+limiter.init_app(app)
 jwt = JWTManager(app)
+
+
+# ---- Token revocation: check refresh-token JTI against the RevokedToken table ----
+from models.database import RevokedToken
+@jwt.token_in_blocklist_loader
+def is_token_revoked(jwt_header, jwt_payload):
+    jti = jwt_payload.get("jti")
+    if not jti:
+        return False
+    return RevokedToken.query.filter_by(jti=jti).first() is not None
+
+
 socketio = init_socketio(app)
 
 
@@ -86,6 +113,7 @@ socketio = init_socketio(app)
 with app.app_context():
     db.create_all()
     print("[app] Database tables ready.")
+init_error_handlers(app, db)
 
 
 # ============================================
@@ -99,6 +127,9 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(upload_bp)
 app.register_blueprint(chat_bp)
 app.register_blueprint(insights_bp)
+app.register_blueprint(ai_chat_bp)
+app.register_blueprint(admin_dash_bp)
+app.register_blueprint(rental_bp)
 
 
 # ============================================
@@ -127,8 +158,8 @@ def home():
     })
 
 
-@app.route("/health", methods=["GET"])
-def health():
+@app.route("/_legacy_health", methods=["GET"])
+def _legacy_health():
     return jsonify({
         "status": "healthy",
         "config": {
@@ -146,4 +177,6 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     debug = os.environ.get("FLASK_ENV") != "production"
     # Use socketio.run instead of app.run so WebSockets work in dev too
-    socketio.run(app, debug=debug, host="0.0.0.0", port=port)
+    # On Windows the debug reloader + eventlet collide on the socket (WinError 10048),
+    # so we disable the reloader. Debugger + tracebacks still work.
+    socketio.run(app, debug=debug, host="0.0.0.0", port=port, use_reloader=False)

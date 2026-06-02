@@ -260,6 +260,108 @@ def delete_property(prop_id):
 # ============================================
 # Admin actions: approve / reject
 # ============================================
+
+
+# ============================================
+# PUT /properties/<id>   - owner edits their own listing
+# ============================================
+# Allow owner (or admin) to update mutable fields. Whitelisted columns only,
+# so request body cannot escalate (e.g. flip is_admin via JSON).
+_EDITABLE_FIELDS = {
+    "title", "price", "currency", "type", "property_type",
+    "district", "sector", "location", "latitude", "longitude",
+    "bedrooms", "bathrooms", "size_sqft", "year_built",
+    "furnished", "parking", "modern_finish",
+    "land_size", "road_access", "proximity_to_city",
+    "image_url",
+    # rental amenities
+    "internet", "water", "electricity", "security",
+}
+
+
+@property_bp.route("/properties/<int:prop_id>", methods=["PUT", "PATCH"])
+@jwt_required()
+def update_property(prop_id):
+    uid = int(get_jwt_identity())
+    prop = Property.query.get(prop_id)
+    if not prop:
+        return jsonify({"error": "Property not found"}), 404
+    me = User.query.get(uid)
+    if prop.user_id != uid and not (me and me.is_admin):
+        return jsonify({"error": "You are not the owner of this listing"}), 403
+
+    data = request.get_json(silent=True) or {}
+    changed = []
+    for k, v in data.items():
+        if k in _EDITABLE_FIELDS:
+            try:
+                # Coerce numbers/bools coming in as JSON or strings
+                if k in ("price", "latitude", "longitude"):
+                    v = float(v) if v not in (None, "") else None
+                elif k in ("bedrooms", "bathrooms", "size_sqft", "year_built",
+                          "parking", "land_size", "proximity_to_city"):
+                    v = int(v) if v not in (None, "") else None
+                elif k in ("furnished", "modern_finish", "internet", "water",
+                           "electricity", "security"):
+                    if isinstance(v, str):
+                        v = v.lower() in ("1", "true", "yes")
+                setattr(prop, k, v)
+                changed.append(k)
+            except (ValueError, TypeError):
+                return jsonify({"error": f"Invalid value for {k}"}), 400
+
+    # Allow images update via images_json list of URLs
+    if "images" in data and isinstance(data["images"], list):
+        prop.set_images(data["images"])
+        changed.append("images")
+
+    # If owner edits an approved listing materially, drop back to pending
+    if changed and prop.status == "approved" and not (me and me.is_admin):
+        material = {"title", "price", "type", "property_type",
+                    "district", "sector", "size_sqft", "bedrooms", "images"}
+        if any(k in material for k in changed):
+            prop.status = "pending"
+            changed.append("status->pending")
+
+    db.session.commit()
+    return jsonify({"property": prop.to_dict(), "changed": changed}), 200
+
+
+# ============================================
+# GET /properties/<id>/similar   - comparable properties (uses comparables engine)
+# ============================================
+@property_bp.route("/properties/<int:prop_id>/similar", methods=["GET"])
+def similar_properties(prop_id):
+    base = Property.query.get(prop_id)
+    if not base:
+        return jsonify({"error": "Not found"}), 404
+    # Filter pool: same type (rent/buy) and approved + available
+    pool = (Property.query
+            .filter(Property.id != base.id,
+                    Property.type == base.type,
+                    Property.status == "approved")
+            .all())
+    if not pool:
+        return jsonify({"similar": []}), 200
+
+    # Lightweight similarity: same sector first, then same property_type,
+    # then bed-count proximity, then price proximity. No heavy ML imports needed.
+    def score(p):
+        s = 0
+        if p.sector and base.sector and p.sector == base.sector: s += 10
+        if p.district and base.district and p.district == base.district: s += 4
+        if p.property_type and base.property_type and p.property_type == base.property_type: s += 5
+        if p.bedrooms and base.bedrooms:
+            s += max(0, 4 - abs(p.bedrooms - base.bedrooms))
+        if p.price and base.price:
+            s += max(0, 5 - abs(p.price - base.price) / max(base.price, 1) * 5)
+        if p.featured: s += 1
+        return s
+
+    ranked = sorted(pool, key=score, reverse=True)[:6]
+    return jsonify({"similar": [p.to_dict() for p in ranked]}), 200
+
+
 @property_bp.route("/properties/<int:prop_id>/approve", methods=["POST"])
 @jwt_required()
 def approve_property(prop_id):

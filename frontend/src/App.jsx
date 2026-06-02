@@ -16,6 +16,12 @@ import Buy from "./pages/Buy";
 import Rent from "./pages/Rent";
 import Sell from "./pages/Sell";
 import NotFound from "./pages/NotFound";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminAllUsers from "./pages/admin/AdminAllUsers";
+import AdminProperties from "./pages/admin/AdminProperties";
+import AdminAIConversations from "./pages/admin/AdminAIConversations";
+import AdminAgents from "./pages/admin/AdminAgents";
 import ComingSoon from "./pages/ComingSoon";
 import EstimateHouse from "./pages/EstimateHouse";
 import EstimateLand from "./pages/EstimateLand";
@@ -90,6 +96,12 @@ function App() {
         <Route path="/estimate-land"  element={<EstimateLand />} />
         <Route path="/dashboard"      element={<Dashboard />} />
         <Route path="/property/:id"   element={<PropertyDetails />} />
+        <Route path="/admin"        element={<AdminDashboard />} />
+        <Route path="/admin/users-pending"  element={<AdminUsers />} />
+        <Route path="/admin/users-all"      element={<AdminAllUsers />} />
+        <Route path="/admin/properties"     element={<AdminProperties />} />
+        <Route path="/admin/ai"             element={<AdminAIConversations />} />
+        <Route path="/admin/agents" element={<AdminAgents />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

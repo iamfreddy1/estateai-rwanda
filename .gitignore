@@ -77,3 +77,12 @@ pip-delete-this-directory.txt
 outputs/
 tmp/
 temp/
+
+# --- EstateAI geo: ignore heavy raw GIS, keep small derived files ---
+backend/ml/geo/osm/
+backend/ml/geo/data/rwa_adm*
+backend/ml/geo/data/*.zip
+backend/ml/geo/versions/
+
+# Locally-uploaded user files (Cloudinary-less dev mode)
+backend/uploads/

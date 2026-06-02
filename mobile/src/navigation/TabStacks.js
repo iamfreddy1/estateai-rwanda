@@ -9,6 +9,7 @@ import BuyScreen from "../screens/BuyScreen";
 import RentScreen from "../screens/RentScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import PropertyDetailsScreen from "../screens/PropertyDetailsScreen";
+import EditListingScreen from "../screens/EditListingScreen";
 import SellScreen from "../screens/SellScreen";
 import EstimateLauncherScreen from "../screens/EstimateLauncherScreen";
 import EstimateHouseScreen from "../screens/EstimateHouseScreen";
@@ -23,6 +24,10 @@ import AgentProfileScreen from "../screens/AgentProfileScreen";
 import AdminPendingAgentsScreen from "../screens/AdminPendingAgentsScreen";
 import ConversationsListScreen from "../screens/ConversationsListScreen";
 import ChatScreen from "../screens/ChatScreen";
+import AIChatScreen from "../screens/AIChatScreen";
+import AIConversationsScreen from "../screens/AIConversationsScreen";
+import LandlordDashboardScreen from "../screens/LandlordDashboardScreen";
+import MyInquiriesScreen from "../screens/MyInquiriesScreen";
 
 const screenOptions = { headerShown: false };
 
@@ -31,7 +36,9 @@ export function HomeStack() {
   return (
     <HomeStackNav.Navigator screenOptions={screenOptions}>
       <HomeStackNav.Screen name="HomeMain" component={HomeScreen} />
+      <HomeStackNav.Screen name="Rent" component={RentScreen} options={{ headerShown: true, title: "For Rent" }} />
       <HomeStackNav.Screen name="PropertyDetails" component={PropertyDetailsScreen} />
+      <HomeStackNav.Screen name="EditListing" component={EditListingScreen} options={{ headerShown: true, title: "Edit Listing" }} />
       <HomeStackNav.Screen name="AgentProfile" component={AgentProfileScreen} />
     </HomeStackNav.Navigator>
   );
@@ -43,6 +50,7 @@ export function BuyStack() {
     <BuyStackNav.Navigator screenOptions={screenOptions}>
       <BuyStackNav.Screen name="BuyMain" component={BuyScreen} />
       <BuyStackNav.Screen name="PropertyDetails" component={PropertyDetailsScreen} />
+      <BuyStackNav.Screen name="EditListing" component={EditListingScreen} options={{ headerShown: true, title: "Edit Listing" }} />
       <BuyStackNav.Screen name="AgentProfile" component={AgentProfileScreen} />
     </BuyStackNav.Navigator>
   );
@@ -54,6 +62,7 @@ export function RentStack() {
     <RentStackNav.Navigator screenOptions={screenOptions}>
       <RentStackNav.Screen name="RentMain" component={RentScreen} />
       <RentStackNav.Screen name="PropertyDetails" component={PropertyDetailsScreen} />
+      <RentStackNav.Screen name="EditListing" component={EditListingScreen} options={{ headerShown: true, title: "Edit Listing" }} />
       <RentStackNav.Screen name="AgentProfile" component={AgentProfileScreen} />
     </RentStackNav.Navigator>
   );
@@ -86,6 +95,7 @@ export function MessagesStack() {
       <MessagesStackNav.Screen name="ConversationsList" component={ConversationsListScreen} />
       <MessagesStackNav.Screen name="Chat" component={ChatScreen} />
       <MessagesStackNav.Screen name="PropertyDetails" component={PropertyDetailsScreen} />
+      <MessagesStackNav.Screen name="EditListing" component={EditListingScreen} options={{ headerShown: true, title: "Edit Listing" }} />
       <MessagesStackNav.Screen name="AgentProfile" component={AgentProfileScreen} />
     </MessagesStackNav.Navigator>
   );
@@ -96,6 +106,10 @@ export function ProfileStack() {
   return (
     <ProfileStackNav.Navigator screenOptions={screenOptions}>
       <ProfileStackNav.Screen name="ProfileMain" component={ProfileScreen} />
+      <ProfileStackNav.Screen name="AIChat" component={AIChatScreen} options={{ headerShown: true, title: "EstateAI Assistant" }} />
+      <ProfileStackNav.Screen name="AIConversations" component={AIConversationsScreen} options={{ headerShown: true, title: "Chats with AI" }} />
+      <ProfileStackNav.Screen name="LandlordDashboard" component={LandlordDashboardScreen} options={{ headerShown: true, title: "Landlord Dashboard" }} />
+      <ProfileStackNav.Screen name="MyInquiries" component={MyInquiriesScreen} options={{ headerShown: true, title: "My Inquiries" }} />
       <ProfileStackNav.Screen name="Favorites" component={FavoritesScreen} />
       <ProfileStackNav.Screen name="VerifyIdentity" component={VerifyIdentityScreen} />
       <ProfileStackNav.Screen name="MyListings" component={MyListingsScreen} />
@@ -105,6 +119,7 @@ export function ProfileStack() {
       <ProfileStackNav.Screen name="AgentProfile" component={AgentProfileScreen} />
       <ProfileStackNav.Screen name="AdminPendingAgents" component={AdminPendingAgentsScreen} />
       <ProfileStackNav.Screen name="PropertyDetails" component={PropertyDetailsScreen} />
+      <ProfileStackNav.Screen name="EditListing" component={EditListingScreen} options={{ headerShown: true, title: "Edit Listing" }} />
     </ProfileStackNav.Navigator>
   );
 }

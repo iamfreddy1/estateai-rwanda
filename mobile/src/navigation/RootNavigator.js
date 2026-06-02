@@ -11,6 +11,7 @@ import { useAuth } from "../context/AuthContext";
 import SplashScreen from "../screens/SplashScreen";
 import LoginScreen from "../screens/LoginScreen";
 import SignupScreen from "../screens/SignupScreen";
+import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import MainTabs from "./MainTabs";
 
 const Stack = createNativeStackNavigator();
@@ -28,6 +29,7 @@ export default function RootNavigator() {
         <>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Signup" component={SignupScreen} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         </>
       )}
     </Stack.Navigator>

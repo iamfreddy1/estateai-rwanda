@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiClient from "./client";
 
 const TOKEN_KEY = "estateai_token";
+const REFRESH_TOKEN_KEY = "estateai_refresh_token";
 const USER_KEY  = "estateai_user";
 
 // ---------- Storage helpers ----------
@@ -20,15 +21,39 @@ export async function getStoredUser() {
   return raw ? JSON.parse(raw) : null;
 }
 
-export async function saveAuth(token, user) {
-  await AsyncStorage.multiSet([
-    [TOKEN_KEY, token],
-    [USER_KEY, JSON.stringify(user)],
-  ]);
+export async function getStoredRefreshToken() {
+  return await AsyncStorage.getItem(REFRESH_TOKEN_KEY);
+}
+
+export async function saveAuth(token, user, refreshToken = null) {
+  const pairs = [[TOKEN_KEY, token], [USER_KEY, JSON.stringify(user)]];
+  if (refreshToken) pairs.push([REFRESH_TOKEN_KEY, refreshToken]);
+  await AsyncStorage.multiSet(pairs);
+}
+
+export async function refreshAccessTokenApi() {
+  const rt = await getStoredRefreshToken();
+  if (!rt) throw new Error("No refresh token");
+  const res = await apiClient.post("/auth/refresh", null, {
+    headers: { Authorization: `Bearer ${rt}` },
+  });
+  return res.data.token;       // new short-lived access token
+}
+
+export async function logoutApi() {
+  // Server-side revoke. Safe to ignore failures (offline / token already revoked).
+  try {
+    const rt = await getStoredRefreshToken();
+    if (rt) {
+      await apiClient.post("/auth/logout", null, {
+        headers: { Authorization: `Bearer ${rt}` },
+      });
+    }
+  } catch {}
 }
 
 export async function clearAuth() {
-  await AsyncStorage.multiRemove([TOKEN_KEY, USER_KEY]);
+  await AsyncStorage.multiRemove([TOKEN_KEY, REFRESH_TOKEN_KEY, USER_KEY]);
 }
 
 // ---------- API calls ----------
@@ -116,4 +141,19 @@ export async function adminApproveAgentApi(uid) {
 export async function adminRejectAgentApi(uid, reason) {
   const res = await apiClient.post(`/auth/agents/${uid}/reject`, { reason });
   return res.data.user;
+}
+
+
+// ---------- Forgot / reset password ----------
+export async function forgotPasswordApi(email) {
+  // Backend always returns 200 to prevent email enumeration
+  const res = await apiClient.post("/auth/forgot-password", { email });
+  return res.data;
+}
+
+export async function resetPasswordApi({ email, code, newPassword }) {
+  const res = await apiClient.post("/auth/reset-password", {
+    email, code, new_password: newPassword,
+  });
+  return res.data;
 }

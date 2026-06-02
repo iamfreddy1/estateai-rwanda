@@ -2,7 +2,9 @@
 // PROFILE SCREEN (with dashboard)
 // ============================================
 
+import { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, useColorScheme } from "react-native";
+import { fetchLandlordStats } from "../api/rentals";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/AuthContext";
 import VerificationBadge from "../components/VerificationBadge";
@@ -12,6 +14,18 @@ export default function ProfileScreen({ navigation }) {
   const scheme = useColorScheme();
   const colors = getColors(scheme);
   const { user, logout } = useAuth();
+
+  // Show the Landlord Dashboard card only when the user actually owns
+  // at least one listing. Silent on failure (non-landlords get back 0).
+  const [hasRentals, setHasRentals] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    if (!user) { setHasRentals(false); return; }
+    fetchLandlordStats()
+      .then((s) => alive && setHasRentals((s?.totals?.listings || 0) > 0))
+      .catch(() => alive && setHasRentals(false));
+    return () => { alive = false; };
+  }, [user]);
 
   const initial = (user?.name || user?.email || "U").trim()[0].toUpperCase();
 
@@ -81,6 +95,20 @@ export default function ProfileScreen({ navigation }) {
             color={colors.warning}
             colors={colors}
             onPress={() => navigation.getParent()?.navigate("AI")}
+          />
+          {hasRentals && (
+            <Action
+              emoji="🏘" label="Landlord Dashboard" desc="My rentals & inquiries"
+              color={colors.primary}
+              colors={colors}
+              onPress={() => navigation.navigate("LandlordDashboard")}
+            />
+          )}
+          <Action
+            emoji="💬" label="AI Assistant" desc="Chat with EstateAI"
+            color={colors.info ?? colors.primary}
+            colors={colors}
+            onPress={() => navigation.navigate("AIConversations")}
           />
           <Action
             emoji="🏠" label="Browse" desc="Buy properties"

@@ -7,12 +7,14 @@
 import { useEffect, useState } from "react";
 import {
   View, Text, ScrollView, Image, TouchableOpacity, StyleSheet,
-  ActivityIndicator, useColorScheme, Alert,
+  ActivityIndicator, useColorScheme, Alert, Linking, FlatList, Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getPropertyApi, deletePropertyApi } from "../api/properties";
+import { getPropertyApi, deletePropertyApi, getSimilarPropertiesApi } from "../api/properties";
 import { startConversationApi } from "../api/chat";
 import { trackViewApi } from "../api/insights";
+import RentalCard from "../components/RentalCard";
+import { inquireRental } from "../api/rentals";
 import { useAuth } from "../context/AuthContext";
 import { getColors, spacing, radius } from "../theme/colors";
 import { formatRWF, formatRWFRent } from "../utils/format";
@@ -29,6 +31,7 @@ export default function PropertyDetailsScreen({ route, navigation }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [contacting, setContacting] = useState(false);
+  const [similarItems, setSimilarItems] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -40,9 +43,51 @@ export default function PropertyDetailsScreen({ route, navigation }) {
 
     // Track this view in the background (powers trending + recommendations)
     trackViewApi(propertyId);
+    getSimilarPropertiesApi(propertyId).then(setSimilarItems).catch(() => {});
 
     return () => { cancelled = true; };
   }, [propertyId]);
+
+
+  const screenWidth = Dimensions.get("window").width;
+  const heroImages = (property?.images && property.images.length > 0)
+    ? property.images
+    : (property?.image ? [property.image] : [FALLBACK_IMG]);
+  const [heroIdx, setHeroIdx] = useState(0);
+  function renderHero() {
+    if (heroImages.length <= 1) {
+      return (
+        <Image source={{ uri: heroImages[0] }} style={styles.heroImage} resizeMode="cover" />
+      );
+    }
+    return (
+      <View>
+        <FlatList
+          data={heroImages}
+          keyExtractor={(_, i) => String(i)}
+          horizontal pagingEnabled showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={e => setHeroIdx(Math.round(e.nativeEvent.contentOffset.x / screenWidth))}
+          renderItem={({ item }) => (
+            <Image source={{ uri: item }} style={[styles.heroImage, { width: screenWidth }]} resizeMode="cover" />
+          )}
+        />
+        <View style={{ position: "absolute", bottom: 10, left: 0, right: 0,
+                       flexDirection: "row", justifyContent: "center" }}>
+          {heroImages.map((_, i) => (
+            <View key={i} style={{ width: i === heroIdx ? 18 : 6, height: 6, borderRadius: 3,
+              backgroundColor: i === heroIdx ? "#fff" : "rgba(255,255,255,0.55)", marginHorizontal: 3 }} />
+          ))}
+        </View>
+        <View style={{ position: "absolute", top: 12, right: 12,
+                       backgroundColor: "rgba(0,0,0,0.55)", paddingHorizontal: 8, paddingVertical: 4,
+                       borderRadius: 12 }}>
+          <Text style={{ color: "#fff", fontSize: 11, fontWeight: "700" }}>
+            {heroIdx + 1} / {heroImages.length}
+          </Text>
+        </View>
+      </View>
+    );
+  }
 
   async function handleContactSeller() {
     if (!user) {
@@ -77,6 +122,40 @@ export default function PropertyDetailsScreen({ route, navigation }) {
     } finally {
       setContacting(false);
     }
+  }
+
+
+  async function handleRequestViewing() {
+    if (!user) {
+      Alert.alert("Login required", "Please log in to request a viewing.");
+      return;
+    }
+    if (!property || property.user_id === user.id) return;
+    try {
+      await inquireRental(property.id, {
+        kind: "viewing",
+        message: "I'd like to visit this property. When is a good time?",
+      });
+      Alert.alert("Request sent", "The landlord has been notified of your viewing request.");
+    } catch (err) {
+      Alert.alert("Could not send request", err.message);
+    }
+  }
+
+  async function handleCallLandlord() {
+    const phone = property?.owner_phone;
+    if (!phone) {
+      Alert.alert("No phone number", "The landlord has not added a public phone number.");
+      return;
+    }
+    // Log the call inquiry first (fire-and-forget so the dialer opens immediately)
+    if (user && property.user_id !== user.id) {
+      inquireRental(property.id, { kind: "call", message: "Tapped Call from the rental page." })
+        .catch(() => {});
+    }
+    Linking.openURL(`tel:${phone}`).catch(() =>
+      Alert.alert("Couldn't open dialer", "Try copying the number: " + phone)
+    );
   }
 
   async function handleDelete() {
@@ -143,11 +222,7 @@ export default function PropertyDetailsScreen({ route, navigation }) {
 
         {/* HERO IMAGE */}
         <View style={styles.heroWrap}>
-          <Image
-            source={{ uri: property.image || FALLBACK_IMG }}
-            style={styles.heroImage}
-            resizeMode="cover"
-          />
+          {renderHero()}
           {/* Back button */}
           <SafeAreaView style={styles.backWrap} edges={["top"]}>
             <TouchableOpacity
@@ -245,6 +320,14 @@ export default function PropertyDetailsScreen({ route, navigation }) {
               Posted {new Date(property.created_at).toLocaleDateString()}
             </Text>
           )}
+          {user && property.user_id === user.id && (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("EditListing", { propertyId: property.id })}
+              style={{ marginBottom: 10, padding: 12, borderRadius: 10,
+                       borderColor: colors.primary, borderWidth: 1, alignItems: "center" }}>
+              <Text style={{ color: colors.primary, fontWeight: "700" }}>✏️ Edit listing</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             style={[styles.contactBtn, {
               backgroundColor: contacting ? colors.textMuted : colors.primary
@@ -256,10 +339,44 @@ export default function PropertyDetailsScreen({ route, navigation }) {
             {contacting ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={styles.buttonText}>💬 Contact Seller</Text>
+              <Text style={styles.buttonText}>
+                {property.type === "rent" ? "💬 Chat with Landlord" : "💬 Contact Seller"}
+              </Text>
             )}
           </TouchableOpacity>
+          {property.type === "rent" && property.user_id !== user?.id && (
+            <View style={{ flexDirection: "row", marginTop: 10, gap: 8 }}>
+              <TouchableOpacity
+                onPress={handleRequestViewing}
+                style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md,
+                         backgroundColor: "#10b981", alignItems: "center" }}
+              >
+                <Text style={{ color: "#fff", fontWeight: "700" }}>👁 Request viewing</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleCallLandlord}
+                style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md,
+                         backgroundColor: "#f59e0b", alignItems: "center" }}
+              >
+                <Text style={{ color: "#fff", fontWeight: "700" }}>📞 Call</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
+{similarItems.length > 0 && (
+          <View style={{ marginTop: 8, marginBottom: 24 }}>
+            <Text style={{ color: colors.text, fontSize: 16, fontWeight: "800", marginLeft: 16, marginBottom: 6 }}>
+              Similar properties
+            </Text>
+            {similarItems.map(p => (
+              <RentalCard
+                key={p.id}
+                rental={p}
+                onPress={() => navigation.push("PropertyDetails", { propertyId: p.id })}
+              />
+            ))}
+          </View>
+        )}
       </ScrollView>
     </View>
   );

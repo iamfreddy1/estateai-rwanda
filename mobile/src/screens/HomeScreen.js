@@ -16,6 +16,7 @@ import PropertyCard from "../components/PropertyCard";
 import HorizontalPropertyStrip from "../components/HorizontalPropertyStrip";
 import MarketTrendsCard from "../components/MarketTrendsCard";
 import { getColors, spacing, radius } from "../theme/colors";
+import AskAIButton from "../components/AskAIButton";
 
 export default function HomeScreen({ navigation }) {
   const scheme = useColorScheme();
@@ -98,13 +99,13 @@ export default function HomeScreen({ navigation }) {
             emoji="🔑"
             label="Rent"
             color={colors.accent}
-            onPress={() => navigation.getParent()?.navigate("Rent")}
+            onPress={() => navigation.navigate("Rent")}
           />
           <ActionTile
             emoji="🤖"
             label="AI"
             color={colors.warning}
-            onPress={() => navigation.getParent()?.navigate("AI")}
+            onPress={() => navigation.getParent()?.navigate("Profile", { screen: "AIConversations" })}
           />
           <ActionTile
             emoji="👤"

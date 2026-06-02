@@ -15,6 +15,7 @@ import {
   clearAuth,
   getStoredUser,
   getStoredToken,
+  logoutApi,
 } from "../api/auth";
 import { connectChatSocket, disconnectChatSocket } from "../sockets/chatSocket";
 import {
@@ -56,7 +57,7 @@ export function AuthProvider({ children }) {
 
   async function login(email, password) {
     const data = await loginApi({ email, password });
-    await saveAuth(data.token, data.user);
+    await saveAuth(data.token, data.user, data.refresh_token);
     setUser(data.user);
     connectChatSocket(data.token);
     registerForPushNotifications();        // fire-and-forget
@@ -65,7 +66,7 @@ export function AuthProvider({ children }) {
 
   async function signup(email, password, name) {
     const data = await signupApi({ email, password, name });
-    await saveAuth(data.token, data.user);
+    await saveAuth(data.token, data.user, data.refresh_token);
     setUser(data.user);
     connectChatSocket(data.token);
     registerForPushNotifications();
@@ -74,7 +75,7 @@ export function AuthProvider({ children }) {
 
   async function loginWithGoogle(idToken) {
     const data = await googleAuthApi(idToken);
-    await saveAuth(data.token, data.user);
+    await saveAuth(data.token, data.user, data.refresh_token);
     setUser(data.user);
     connectChatSocket(data.token);
     registerForPushNotifications();
@@ -103,8 +104,9 @@ export function AuthProvider({ children }) {
   }, [user]);
 
   async function logout() {
-    // Best-effort: tell backend to forget this device
+    // Best-effort: tell backend to forget this device + revoke refresh token
     try { await unregisterPushNotifications(); } catch {}
+    try { await logoutApi(); } catch {}
     disconnectChatSocket();
     await clearAuth();
     setUser(null);

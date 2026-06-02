@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+venv/
+.venv/
+uploads/
+ml/geo/osm/
+ml/geo/data/rwa_adm*
+ml/geo/data/*.zip
+*.db
+.env
+.git/
+tests/

@@ -26,6 +26,7 @@ class User(db.Model):
     # Google's stable user ID. Set when user signs in with Google.
     google_sub = db.Column(db.String(64), unique=True, nullable=True, index=True)
     auth_provider = db.Column(db.String(20), default="email")  # "email" or "google"
+    email_verified = db.Column(db.Boolean, default=False, nullable=False)
 
     # ----- Identity Verification -----
     national_id_url = db.Column(db.String(500), nullable=True)
@@ -36,6 +37,8 @@ class User(db.Model):
 
     # ----- Roles -----
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
+    suspended = db.Column(db.Boolean, default=False, nullable=False)
+    suspension_reason = db.Column(db.String(300), nullable=True)
     role = db.Column(db.String(20), default="user")  # "user" | "agent" | "admin"
 
     # ----- Push notifications -----
@@ -82,8 +85,10 @@ class User(db.Model):
             "name": self.name,
             "avatar_url": self.avatar_url,
             "auth_provider": self.auth_provider,
+            "email_verified": self.email_verified,
             "verification_status": self.verification_status,
             "is_admin": self.is_admin,
+            "suspended": self.suspended,
             "role": self.role,
             "is_agent": self.agent_status == "approved",
             "agent_status": self.agent_status,
@@ -147,6 +152,16 @@ class Property(db.Model):
     ownership_doc_url = db.Column(db.String(500), nullable=True)
     rejection_reason = db.Column(db.String(500), nullable=True)
     approved_at = db.Column(db.DateTime, nullable=True)
+    # Rental availability lifecycle: available / reserved / rented / expired / hidden
+    # Separate from moderation `status` (pending/approved/rejected) on purpose.
+    availability = db.Column(db.String(20), default="available", nullable=False, index=True)
+    rented_at = db.Column(db.DateTime, nullable=True)
+    # Rental amenities (nullable -> "unknown", not "false")
+    internet = db.Column(db.Boolean, nullable=True)
+    water = db.Column(db.Boolean, nullable=True)
+    electricity = db.Column(db.Boolean, nullable=True)
+    security = db.Column(db.Boolean, nullable=True)
+    featured = db.Column(db.Boolean, default=False, nullable=False, index=True)
 
     # ---- Meta ----
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -207,6 +222,9 @@ class Property(db.Model):
             "images": self.get_images(),
 
             "status": self.status,
+            "availability": self.availability,
+            "rented_at": self.rented_at.isoformat() if self.rented_at else None,
+            "amenities": {"internet": self.internet, "water": self.water, "electricity": self.electricity, "security": self.security},
             "rejection_reason": self.rejection_reason,
             "approved_at": self.approved_at.isoformat() if self.approved_at else None,
 
@@ -215,6 +233,7 @@ class Property(db.Model):
             "owner_is_agent": self.owner.agent_status == "approved" if self.owner else False,
             "owner_agency": self.owner.agency_name if self.owner else None,
             "owner_avatar": self.owner.avatar_url if self.owner else None,
+            "owner_phone": self.owner.phone if self.owner else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
         # ownership_doc_url is sensitive - only include for owner/admin
@@ -332,3 +351,230 @@ class PropertyView(db.Model):
     property_type = db.Column(db.String(40), nullable=True)
     type = db.Column(db.String(20), nullable=True)        # buy / rent
     price = db.Column(db.Float, nullable=True)
+
+
+# ============================================
+# LISTING MODEL  (raw + normalized scraped/ingested listings)
+# ============================================
+# Separate from Property (user-created listings) on purpose: this is the
+# market-intelligence corpus feeding the valuation model. PostGIS-ready: lat/lon
+# are plain floats now; a geometry column + GIST index can be added later
+# without touching application code.
+class Listing(db.Model):
+    __tablename__ = "listings"
+
+    id = db.Column(db.Integer, primary_key=True)
+    source = db.Column(db.String(40), nullable=False)        # houseinrwanda | quickhomes | ...
+    source_id = db.Column(db.String(160), nullable=False)    # stable id within source
+    url = db.Column(db.String(600), nullable=True)
+
+    title = db.Column(db.String(300), nullable=True)
+    price = db.Column(db.Float, nullable=True)
+    currency = db.Column(db.String(10), default="RWF")
+    type = db.Column(db.String(20), nullable=True)           # buy | rent
+    property_type = db.Column(db.String(40), nullable=True)
+
+    district = db.Column(db.String(80), nullable=True, index=True)
+    sector = db.Column(db.String(80), nullable=True, index=True)
+    cell = db.Column(db.String(80), nullable=True)
+    village = db.Column(db.String(80), nullable=True)
+    address = db.Column(db.String(500), nullable=True)
+    latitude = db.Column(db.Float, nullable=True)
+    longitude = db.Column(db.Float, nullable=True)
+    geo_precision = db.Column(db.String(20), nullable=True)  # cell | sector | address
+
+    bedrooms = db.Column(db.Integer, nullable=True)
+    bathrooms = db.Column(db.Integer, nullable=True)
+    size_sqft = db.Column(db.Float, nullable=True)
+    land_size = db.Column(db.Float, nullable=True)
+
+    images_json = db.Column(db.Text, nullable=True)
+    description = db.Column(db.Text, nullable=True)
+
+    luxury_score = db.Column(db.Integer, nullable=True)
+    risk_score = db.Column(db.Integer, nullable=True)
+    status = db.Column(db.String(20), default="new")         # new | validated | rejected
+    scraped_at = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    __table_args__ = (
+        db.UniqueConstraint("source", "source_id", name="uq_listing_source"),
+        db.Index("ix_listing_geo", "latitude", "longitude"),
+        db.Index("ix_listing_type_sector", "type", "sector"),
+    )
+
+    def to_dict(self):
+        import json
+        return {
+            "id": self.id, "source": self.source, "source_id": self.source_id, "url": self.url,
+            "title": self.title, "price": self.price, "currency": self.currency,
+            "type": self.type, "property_type": self.property_type,
+            "district": self.district, "sector": self.sector, "cell": self.cell,
+            "latitude": self.latitude, "longitude": self.longitude, "geo_precision": self.geo_precision,
+            "bedrooms": self.bedrooms, "bathrooms": self.bathrooms,
+            "size_sqft": self.size_sqft, "land_size": self.land_size,
+            "images": json.loads(self.images_json) if self.images_json else [],
+            "luxury_score": self.luxury_score, "risk_score": self.risk_score,
+            "status": self.status,
+            "availability": self.availability,
+            "rented_at": self.rented_at.isoformat() if self.rented_at else None,
+            "amenities": {"internet": self.internet, "water": self.water, "electricity": self.electricity, "security": self.security},
+            "scraped_at": self.scraped_at.isoformat() if self.scraped_at else None,
+        }
+
+
+# ============================================
+# AI CHAT MODELS
+# ============================================
+class AIConversation(db.Model):
+    __tablename__ = "ai_conversations"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    title = db.Column(db.String(120), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    messages = db.relationship(
+        "AIMessage", backref="conversation",
+        cascade="all, delete-orphan", order_by="AIMessage.id", lazy=True,
+    )
+
+    def to_dict(self, include_last_message=False):
+        d = {
+            "id": self.id, "title": self.title,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+        }
+        if include_last_message and self.messages:
+            last = self.messages[-1]
+            d["last_message"] = {"role": last.role, "content": (last.content or "")[:140]}
+        return d
+
+
+class AIMessage(db.Model):
+    __tablename__ = "ai_messages"
+    id = db.Column(db.Integer, primary_key=True)
+    conversation_id = db.Column(
+        db.Integer, db.ForeignKey("ai_conversations.id"), nullable=False, index=True
+    )
+    role = db.Column(db.String(16), nullable=False)        # 'user' | 'assistant'
+    content = db.Column(db.Text, nullable=False)
+    prompt_tokens = db.Column(db.Integer, nullable=True)
+    completion_tokens = db.Column(db.Integer, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id, "role": self.role, "content": self.content,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "tokens": {"prompt": self.prompt_tokens, "completion": self.completion_tokens},
+        }
+
+
+
+# ============================================
+# REVOKED TOKEN BLOCKLIST  (logout / forced session kill)
+# ============================================
+class RevokedToken(db.Model):
+    __tablename__ = "revoked_tokens"
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String(64), unique=True, nullable=False, index=True)
+    revoked_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+
+# ============================================
+# PASSWORD RESET CODES
+# ============================================
+# Short-lived (30 min) one-time codes emailed to the user. The actual code is
+# stored as a bcrypt hash so a DB leak can't be used to reset accounts.
+class PasswordResetCode(db.Model):
+    __tablename__ = "password_reset_codes"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    code_hash = db.Column(db.String(200), nullable=False)
+    expires_at = db.Column(db.DateTime, nullable=False, index=True)
+    used_at = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+
+# ============================================
+# RENTAL INQUIRY  (renter expresses interest in a rental listing)
+# ============================================
+# Three kinds: 'chat' (start a conversation), 'viewing' (request a property
+# visit on a specific date), 'call' (renter intends to phone). All inquiries
+# show up in the landlord dashboard as actionable cards.
+class RentalInquiry(db.Model):
+    __tablename__ = "rental_inquiries"
+    id = db.Column(db.Integer, primary_key=True)
+    property_id = db.Column(db.Integer, db.ForeignKey("properties.id"), nullable=False, index=True)
+    renter_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    kind = db.Column(db.String(20), nullable=False)   # chat | viewing | call
+    message = db.Column(db.Text, nullable=True)
+    viewing_date = db.Column(db.DateTime, nullable=True)   # if kind == viewing
+    status = db.Column(db.String(20), default="open", nullable=False, index=True)
+    # open | answered | dismissed | closed
+    response = db.Column(db.Text, nullable=True)
+    response_at = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    property = db.relationship("Property", backref="inquiries")
+    renter = db.relationship("User", foreign_keys=[renter_id])
+    owner = db.relationship("User", foreign_keys=[owner_id])
+
+    def to_dict(self):
+        return {
+            "id": self.id, "property_id": self.property_id,
+            "renter": {
+                "id": self.renter.id, "name": self.renter.name or self.renter.email.split("@")[0],
+                "avatar_url": self.renter.avatar_url, "phone": self.renter.phone,
+            } if self.renter else None,
+            "kind": self.kind, "message": self.message,
+            "viewing_date": self.viewing_date.isoformat() if self.viewing_date else None,
+            "status": self.status, "response": self.response,
+            "response_at": self.response_at.isoformat() if self.response_at else None,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "property_title": self.property.title if self.property else None,
+            "property_price": self.property.price if self.property else None,
+            "property_image": self.property.image_url if self.property else None,
+        }
+
+
+
+# ============================================
+# AUDIT LOG — immutable record of admin/sensitive actions
+# ============================================
+class AuditLog(db.Model):
+    __tablename__ = "audit_logs"
+    id = db.Column(db.Integer, primary_key=True)
+    actor_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True, index=True)
+    actor_email = db.Column(db.String(120), nullable=True)
+    action = db.Column(db.String(80), nullable=False, index=True)
+    target_type = db.Column(db.String(40), nullable=True)
+    target_id = db.Column(db.String(40), nullable=True)
+    detail = db.Column(db.Text, nullable=True)
+    ip = db.Column(db.String(45), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id, "actor_id": self.actor_id, "actor_email": self.actor_email,
+            "action": self.action, "target_type": self.target_type, "target_id": self.target_id,
+            "detail": self.detail, "ip": self.ip,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+
+# ============================================
+# EMAIL VERIFICATION CODES — 6-digit, hashed, 24h expiry
+# ============================================
+class EmailVerificationCode(db.Model):
+    __tablename__ = "email_verification_codes"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    code_hash = db.Column(db.String(200), nullable=False)
+    expires_at = db.Column(db.DateTime, nullable=False, index=True)
+    used_at = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)

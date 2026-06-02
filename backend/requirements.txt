@@ -18,3 +18,21 @@ cloudinary==1.41.0
 flask-socketio==5.5.1
 python-socketio==5.13.0
 eventlet==0.40.0
+
+# --- Geospatial engine (RUNTIME dependency for predictions) ---
+shapely==2.1.2
+# pyshp only needed for the one-time prepare scripts (not at runtime):
+# pyshp
+# --- Optional ML libs for LOCAL training only ---
+# Deployed model is a scikit-learn Stacking ensemble (RF+GBR) -> needs only
+# scikit-learn at runtime. Install these locally to train the full roster:
+# xgboost
+# lightgbm
+# catboost
+# shap
+
+# --- AI chat assistant ---
+openai==1.99.7
+
+# --- rate limiting (brute-force protection) ---
+Flask-Limiter==3.8.0

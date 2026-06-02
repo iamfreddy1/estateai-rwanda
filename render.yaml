@@ -17,7 +17,8 @@ services:
     plan: free
     rootDir: backend
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    # eventlet worker is REQUIRED for Flask-SocketIO (chat) - must match Procfile
+    startCommand: gunicorn --worker-class eventlet -w 1 --timeout 120 app:app
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -29,4 +30,17 @@ services:
         value: production
       - key: PYTHON_VERSION
         value: 3.11.10
+      # ---- set these in the Render dashboard (sync:false keeps secrets out of git) ----
+      - key: ALLOWED_ORIGINS      # comma-separated web origins for CORS; mobile app is unaffected
+        sync: false
+      - key: GOOGLE_CLIENT_IDS    # web + android OAuth client IDs, comma-separated
+        sync: false
+      - key: SEED_SECRET          # protects /admin/seed (recreate-db is prod-disabled)
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
     healthCheckPath: /health

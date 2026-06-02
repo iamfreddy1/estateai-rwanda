@@ -1,0 +1,888 @@
+{
+  "Gitega": {
+    "district": "Nyarugenge",
+    "sector": "Gitega",
+    "pcode": "RW1101",
+    "lat": -1.953482,
+    "lon": 30.055563,
+    "area_km2": 1.174,
+    "poi_total": 4,
+    "poi_counts": {
+      "restaurant": 1,
+      "bank": 1,
+      "school": 1,
+      "hospital": 1
+    },
+    "cbd_distance_km": 0.544,
+    "nearest_km": {
+      "school": 0.515,
+      "hospital": 0.454,
+      "bank": 0.424,
+      "market": 1.751
+    },
+    "sector_density_score": 12.9,
+    "accessibility_score": 100.0,
+    "neighborhood_score": 39.9,
+    "investment_score": 93.5
+  },
+  "Kanyinya": {
+    "district": "Nyarugenge",
+    "sector": "Kanyinya",
+    "pcode": "RW1102",
+    "lat": -1.909427,
+    "lon": 30.001015,
+    "area_km2": 24.174,
+    "poi_total": 2,
+    "poi_counts": {
+      "hospital": 2
+    },
+    "cbd_distance_km": 7.851,
+    "nearest_km": {
+      "school": 6.367,
+      "hospital": 2.191,
+      "bank": 6.031,
+      "market": 6.222
+    },
+    "sector_density_score": 0.3,
+    "accessibility_score": 14.6,
+    "neighborhood_score": 6.3,
+    "investment_score": 14.5
+  },
+  "Kigali": {
+    "district": "Nyarugenge",
+    "sector": "Kigali",
+    "pcode": "RW1103",
+    "lat": -1.980568,
+    "lon": 30.018215,
+    "area_km2": 29.383,
+    "poi_total": 0,
+    "poi_counts": {},
+    "cbd_distance_km": 5.663,
+    "nearest_km": {
+      "school": 3.165,
+      "hospital": 2.755,
+      "bank": 3.967,
+      "market": 3.704
+    },
+    "sector_density_score": 0.0,
+    "accessibility_score": 22.1,
+    "neighborhood_score": 7.7,
+    "investment_score": 22.1
+  },
+  "Kimisagara": {
+    "district": "Nyarugenge",
+    "sector": "Kimisagara",
+    "pcode": "RW1104",
+    "lat": -1.95122,
+    "lon": 30.04521,
+    "area_km2": 3.313,
+    "poi_total": 26,
+    "poi_counts": {
+      "bank": 9,
+      "restaurant": 11,
+      "hospital": 2,
+      "school": 3,
+      "shopping": 1
+    },
+    "cbd_distance_km": 1.528,
+    "nearest_km": {
+      "school": 0.706,
+      "hospital": 0.578,
+      "bank": 0.755,
+      "market": 1.338
+    },
+    "sector_density_score": 29.8,
+    "accessibility_score": 73.1,
+    "neighborhood_score": 41.1,
+    "investment_score": 62.2
+  },
+  "Mageregere": {
+    "district": "Nyarugenge",
+    "sector": "Mageregere",
+    "pcode": "RW1105",
+    "lat": -2.038705,
+    "lon": 30.035203,
+    "area_km2": 54.65,
+    "poi_total": 5,
+    "poi_counts": {
+      "school": 1,
+      "hospital": 2,
+      "market": 2
+    },
+    "cbd_distance_km": 10.22,
+    "nearest_km": {
+      "school": 2.484,
+      "hospital": 2.305,
+      "bank": 7.508,
+      "market": 1.633
+    },
+    "sector_density_score": 0.3,
+    "accessibility_score": 20.4,
+    "neighborhood_score": 8.9,
+    "investment_score": 20.4
+  },
+  "Muhima": {
+    "district": "Nyarugenge",
+    "sector": "Muhima",
+    "pcode": "RW1106",
+    "lat": -1.944624,
+    "lon": 30.06865,
+    "area_km2": 2.944,
+    "poi_total": 24,
+    "poi_counts": {
+      "restaurant": 6,
+      "hospital": 13,
+      "shopping": 2,
+      "market": 1,
+      "school": 2
+    },
+    "cbd_distance_km": 1.232,
+    "nearest_km": {
+      "school": 0.522,
+      "hospital": 0.149,
+      "bank": 0.695,
+      "market": 2.192
+    },
+    "sector_density_score": 30.9,
+    "accessibility_score": 82.5,
+    "neighborhood_score": 45.8,
+    "investment_score": 69.8
+  },
+  "Nyakabanda": {
+    "district": "Nyarugenge",
+    "sector": "Nyakabanda",
+    "pcode": "RW1107",
+    "lat": -1.969879,
+    "lon": 30.044074,
+    "area_km2": 2.424,
+    "poi_total": 0,
+    "poi_counts": {},
+    "cbd_distance_km": 2.766,
+    "nearest_km": {
+      "school": 1.102,
+      "hospital": 0.948,
+      "bank": 1.224,
+      "market": 0.987
+    },
+    "sector_density_score": 0.0,
+    "accessibility_score": 55.3,
+    "neighborhood_score": 19.4,
+    "investment_score": 55.3
+  },
+  "Nyamirambo": {
+    "district": "Nyarugenge",
+    "sector": "Nyamirambo",
+    "pcode": "RW1108",
+    "lat": -1.993563,
+    "lon": 30.040431,
+    "area_km2": 8.746,
+    "poi_total": 14,
+    "poi_counts": {
+      "school": 6,
+      "hospital": 7,
+      "market": 1
+    },
+    "cbd_distance_km": 5.271,
+    "nearest_km": {
+      "school": 1.435,
+      "hospital": 1.088,
+      "bank": 2.672,
+      "market": 0.992
+    },
+    "sector_density_score": 6.1,
+    "accessibility_score": 39.6,
+    "neighborhood_score": 22.4,
+    "investment_score": 38.4
+  },
+  "Nyarugenge": {
+    "district": "Nyarugenge",
+    "sector": "Nyarugenge",
+    "pcode": "RW1109",
+    "lat": -1.95699,
+    "lon": 30.065712,
+    "area_km2": 4.626,
+    "poi_total": 122,
+    "poi_counts": {
+      "restaurant": 48,
+      "school": 9,
+      "shopping": 16,
+      "bank": 25,
+      "hospital": 24
+    },
+    "cbd_distance_km": 1.093,
+    "nearest_km": {
+      "school": 0.336,
+      "hospital": 0.36,
+      "bank": 0.304,
+      "market": 1.779
+    },
+    "sector_density_score": 100.0,
+    "accessibility_score": 89.2,
+    "neighborhood_score": 96.2,
+    "investment_score": 44.6
+  },
+  "Rwezamenyo": {
+    "district": "Nyarugenge",
+    "sector": "Rwezamenyo",
+    "pcode": "RW1110",
+    "lat": -1.969274,
+    "lon": 30.053923,
+    "area_km2": 1.027,
+    "poi_total": 15,
+    "poi_counts": {
+      "bank": 1,
+      "school": 6,
+      "restaurant": 3,
+      "hospital": 3,
+      "shopping": 1,
+      "market": 1
+    },
+    "cbd_distance_km": 2.224,
+    "nearest_km": {
+      "school": 0.315,
+      "hospital": 0.168,
+      "bank": 0.521,
+      "market": 0.737
+    },
+    "sector_density_score": 55.4,
+    "accessibility_score": 79.6,
+    "neighborhood_score": 47.6,
+    "investment_score": 57.5
+  },
+  "Bumbogo": {
+    "district": "Gasabo",
+    "sector": "Bumbogo",
+    "pcode": "RW1201",
+    "lat": -1.885258,
+    "lon": 30.144948,
+    "area_km2": 60.602,
+    "poi_total": 3,
+    "poi_counts": {
+      "school": 2,
+      "hospital": 1
+    },
+    "cbd_distance_km": 11.963,
+    "nearest_km": {
+      "school": 4.912,
+      "hospital": 2.984,
+      "bank": 7.37,
+      "market": 7.044
+    },
+    "sector_density_score": 0.2,
+    "accessibility_score": 9.9,
+    "neighborhood_score": 5.1,
+    "investment_score": 9.9
+  },
+  "Gatsata": {
+    "district": "Gasabo",
+    "sector": "Gatsata",
+    "pcode": "RW1202",
+    "lat": -1.923074,
+    "lon": 30.041832,
+    "area_km2": 6.022,
+    "poi_total": 1,
+    "poi_counts": {
+      "hospital": 1
+    },
+    "cbd_distance_km": 3.535,
+    "nearest_km": {
+      "school": 1.724,
+      "hospital": 0.964,
+      "bank": 2.095,
+      "market": 1.965
+    },
+    "sector_density_score": 0.6,
+    "accessibility_score": 42.2,
+    "neighborhood_score": 15.5,
+    "investment_score": 42.1
+  },
+  "Gikomero": {
+    "district": "Gasabo",
+    "sector": "Gikomero",
+    "pcode": "RW1203",
+    "lat": -1.87228,
+    "lon": 30.226922,
+    "area_km2": 35.061,
+    "poi_total": 0,
+    "poi_counts": {},
+    "cbd_distance_km": 20.571,
+    "nearest_km": {
+      "school": 10.337,
+      "hospital": 7.093,
+      "bank": 14.079,
+      "market": 13.952
+    },
+    "sector_density_score": 0.0,
+    "accessibility_score": 0.0,
+    "neighborhood_score": 0.0,
+    "investment_score": 0.0
+  },
+  "Gisozi": {
+    "district": "Gasabo",
+    "sector": "Gisozi",
+    "pcode": "RW1204",
+    "lat": -1.917852,
+    "lon": 30.062596,
+    "area_km2": 8.304,
+    "poi_total": 17,
+    "poi_counts": {
+      "shopping": 2,
+      "school": 4,
+      "bank": 2,
+      "hospital": 7,
+      "restaurant": 2
+    },
+    "cbd_distance_km": 3.587,
+    "nearest_km": {
+      "school": 0.708,
+      "hospital": 0.343,
+      "bank": 1.134,
+      "market": 2.897
+    },
+    "sector_density_score": 7.8,
+    "accessibility_score": 53.6,
+    "neighborhood_score": 28.8,
+    "investment_score": 51.5
+  },
+  "Jabana": {
+    "district": "Gasabo",
+    "sector": "Jabana",
+    "pcode": "RW1205",
+    "lat": -1.865791,
+    "lon": 30.059337,
+    "area_km2": 36.383,
+    "poi_total": 1,
+    "poi_counts": {
+      "hospital": 1
+    },
+    "cbd_distance_km": 9.353,
+    "nearest_km": {
+      "school": 5.605,
+      "hospital": 1.653,
+      "bank": 6.558,
+      "market": 6.819
+    },
+    "sector_density_score": 0.1,
+    "accessibility_score": 14.4,
+    "neighborhood_score": 5.6,
+    "investment_score": 14.4
+  },
+  "Jali": {
+    "district": "Gasabo",
+    "sector": "Jali",
+    "pcode": "RW1206",
+    "lat": -1.888065,
+    "lon": 30.01761,
+    "area_km2": 37.374,
+    "poi_total": 0,
+    "poi_counts": {},
+    "cbd_distance_km": 8.266,
+    "nearest_km": {
+      "school": 5.751,
+      "hospital": 3.842,
+      "bank": 6.716,
+      "market": 6.659
+    },
+    "sector_density_score": 0.0,
+    "accessibility_score": 11.5,
+    "neighborhood_score": 4.0,
+    "investment_score": 11.5
+  },
+  "Kacyiru": {
+    "district": "Gasabo",
+    "sector": "Kacyiru",
+    "pcode": "RW1207",
+    "lat": -1.938011,
+    "lon": 30.080394,
+    "area_km2": 5.784,
+    "poi_total": 52,
+    "poi_counts": {
+      "restaurant": 27,
+      "school": 10,
+      "bank": 3,
+      "shopping": 2,
+      "hospital": 10
+    },
+    "cbd_distance_km": 2.73,
+    "nearest_km": {
+      "school": 0.36,
+      "hospital": 0.225,
+      "bank": 1.737,
+      "market": 2.358
+    },
+    "sector_density_score": 34.1,
+    "accessibility_score": 61.6,
+    "neighborhood_score": 43.6,
+    "investment_score": 51.1
+  },
+  "Kimihurura": {
+    "district": "Gasabo",
+    "sector": "Kimihurura",
+    "pcode": "RW1208",
+    "lat": -1.953759,
+    "lon": 30.088987,
+    "area_km2": 5.071,
+    "poi_total": 95,
+    "poi_counts": {
+      "restaurant": 53,
+      "school": 17,
+      "bank": 6,
+      "hospital": 10,
+      "market": 3,
+      "shopping": 6
+    },
+    "cbd_distance_km": 3.371,
+    "nearest_km": {
+      "school": 0.457,
+      "hospital": 0.382,
+      "bank": 0.446,
+      "market": 0.893
+    },
+    "sector_density_score": 71.0,
+    "accessibility_score": 67.4,
+    "neighborhood_score": 62.4,
+    "investment_score": 43.5
+  },
+  "Kimironko": {
+    "district": "Gasabo",
+    "sector": "Kimironko",
+    "pcode": "RW1209",
+    "lat": -1.940545,
+    "lon": 30.126777,
+    "area_km2": 11.333,
+    "poi_total": 47,
+    "poi_counts": {
+      "restaurant": 9,
+      "school": 13,
+      "bank": 3,
+      "shopping": 3,
+      "hospital": 18,
+      "market": 1
+    },
+    "cbd_distance_km": 7.615,
+    "nearest_km": {
+      "school": 0.753,
+      "hospital": 0.257,
+      "bank": 0.918,
+      "market": 1.041
+    },
+    "sector_density_score": 15.7,
+    "accessibility_score": 51.7,
+    "neighborhood_score": 42.0,
+    "investment_score": 47.6
+  },
+  "Kinyinya": {
+    "district": "Gasabo",
+    "sector": "Kinyinya",
+    "pcode": "RW1210",
+    "lat": -1.911508,
+    "lon": 30.101328,
+    "area_km2": 24.195,
+    "poi_total": 30,
+    "poi_counts": {
+      "school": 4,
+      "shopping": 3,
+      "restaurant": 8,
+      "market": 1,
+      "hospital": 14
+    },
+    "cbd_distance_km": 6.361,
+    "nearest_km": {
+      "school": 1.474,
+      "hospital": 0.742,
+      "bank": 3.269,
+      "market": 1.386
+    },
+    "sector_density_score": 4.7,
+    "accessibility_score": 36.8,
+    "neighborhood_score": 25.4,
+    "investment_score": 35.9
+  },
+  "Ndera": {
+    "district": "Gasabo",
+    "sector": "Ndera",
+    "pcode": "RW1211",
+    "lat": -1.924492,
+    "lon": 30.197602,
+    "area_km2": 50.376,
+    "poi_total": 14,
+    "poi_counts": {
+      "school": 3,
+      "hospital": 9,
+      "restaurant": 2
+    },
+    "cbd_distance_km": 15.671,
+    "nearest_km": {
+      "school": 4.497,
+      "hospital": 2.487,
+      "bank": 8.407,
+      "market": 7.777
+    },
+    "sector_density_score": 1.1,
+    "accessibility_score": 8.9,
+    "neighborhood_score": 9.9,
+    "investment_score": 8.9
+  },
+  "Nduba": {
+    "district": "Gasabo",
+    "sector": "Nduba",
+    "pcode": "RW1212",
+    "lat": -1.850919,
+    "lon": 30.119125,
+    "area_km2": 46.543,
+    "poi_total": 1,
+    "poi_counts": {
+      "hospital": 1
+    },
+    "cbd_distance_km": 12.882,
+    "nearest_km": {
+      "school": 7.698,
+      "hospital": 1.557,
+      "bank": 9.647,
+      "market": 8.129
+    },
+    "sector_density_score": 0.1,
+    "accessibility_score": 10.4,
+    "neighborhood_score": 4.2,
+    "investment_score": 10.4
+  },
+  "Remera": {
+    "district": "Gasabo",
+    "sector": "Remera",
+    "pcode": "RW1213",
+    "lat": -1.946367,
+    "lon": 30.106035,
+    "area_km2": 7.267,
+    "poi_total": 117,
+    "poi_counts": {
+      "restaurant": 45,
+      "bank": 21,
+      "hospital": 33,
+      "shopping": 8,
+      "school": 7,
+      "market": 3
+    },
+    "cbd_distance_km": 5.253,
+    "nearest_km": {
+      "school": 0.415,
+      "hospital": 0.103,
+      "bank": 0.685,
+      "market": 1.031
+    },
+    "sector_density_score": 61.1,
+    "accessibility_score": 62.8,
+    "neighborhood_score": 74.5,
+    "investment_score": 43.6
+  },
+  "Rusororo": {
+    "district": "Gasabo",
+    "sector": "Rusororo",
+    "pcode": "RW1214",
+    "lat": -1.940798,
+    "lon": 30.248574,
+    "area_km2": 52.23,
+    "poi_total": 6,
+    "poi_counts": {
+      "restaurant": 3,
+      "hospital": 3
+    },
+    "cbd_distance_km": 21.103,
+    "nearest_km": {
+      "school": 5.249,
+      "hospital": 1.238,
+      "bank": 13.656,
+      "market": 11.888
+    },
+    "sector_density_score": 0.4,
+    "accessibility_score": 9.0,
+    "neighborhood_score": 4.9,
+    "investment_score": 9.0
+  },
+  "Rutunga": {
+    "district": "Gasabo",
+    "sector": "Rutunga",
+    "pcode": "RW1215",
+    "lat": -1.823673,
+    "lon": 30.174276,
+    "area_km2": 42.709,
+    "poi_total": 0,
+    "poi_counts": {},
+    "cbd_distance_km": 19.011,
+    "nearest_km": {
+      "school": 12.207,
+      "hospital": 4.631,
+      "bank": 14.91,
+      "market": 14.025
+    },
+    "sector_density_score": 0.0,
+    "accessibility_score": 1.2,
+    "neighborhood_score": 0.4,
+    "investment_score": 1.2
+  },
+  "Gahanga": {
+    "district": "Kicukiro",
+    "sector": "Gahanga",
+    "pcode": "RW1301",
+    "lat": -2.031427,
+    "lon": 30.115033,
+    "area_km2": 36.768,
+    "poi_total": 6,
+    "poi_counts": {
+      "school": 3,
+      "hospital": 1,
+      "market": 1,
+      "restaurant": 1
+    },
+    "cbd_distance_km": 11.004,
+    "nearest_km": {
+      "school": 1.745,
+      "hospital": 3.418,
+      "bank": 5.766,
+      "market": 1.278
+    },
+    "sector_density_score": 0.6,
+    "accessibility_score": 21.9,
+    "neighborhood_score": 10.0,
+    "investment_score": 21.8
+  },
+  "Gatenga": {
+    "district": "Kicukiro",
+    "sector": "Gatenga",
+    "pcode": "RW1302",
+    "lat": -2.000274,
+    "lon": 30.081341,
+    "area_km2": 12.44,
+    "poi_total": 15,
+    "poi_counts": {
+      "school": 3,
+      "restaurant": 2,
+      "bank": 1,
+      "market": 1,
+      "shopping": 1,
+      "hospital": 7
+    },
+    "cbd_distance_km": 6.131,
+    "nearest_km": {
+      "school": 1.157,
+      "hospital": 1.696,
+      "bank": 3.01,
+      "market": 1.102
+    },
+    "sector_density_score": 4.6,
+    "accessibility_score": 35.5,
+    "neighborhood_score": 20.1,
+    "investment_score": 34.7
+  },
+  "Gikondo": {
+    "district": "Kicukiro",
+    "sector": "Gikondo",
+    "pcode": "RW1303",
+    "lat": -1.974623,
+    "lon": 30.080386,
+    "area_km2": 3.385,
+    "poi_total": 14,
+    "poi_counts": {
+      "shopping": 2,
+      "restaurant": 3,
+      "hospital": 6,
+      "school": 3
+    },
+    "cbd_distance_km": 3.641,
+    "nearest_km": {
+      "school": 0.633,
+      "hospital": 0.11,
+      "bank": 1.707,
+      "market": 1.678
+    },
+    "sector_density_score": 15.7,
+    "accessibility_score": 57.8,
+    "neighborhood_score": 30.1,
+    "investment_score": 53.3
+  },
+  "Kagarama": {
+    "district": "Kicukiro",
+    "sector": "Kagarama",
+    "pcode": "RW1304",
+    "lat": -1.998316,
+    "lon": 30.121392,
+    "area_km2": 7.994,
+    "poi_total": 7,
+    "poi_counts": {
+      "school": 3,
+      "restaurant": 3,
+      "hospital": 1
+    },
+    "cbd_distance_km": 8.787,
+    "nearest_km": {
+      "school": 0.467,
+      "hospital": 0.6,
+      "bank": 2.7,
+      "market": 2.657
+    },
+    "sector_density_score": 3.3,
+    "accessibility_score": 38.6,
+    "neighborhood_score": 16.5,
+    "investment_score": 38.0
+  },
+  "Kanombe": {
+    "district": "Kicukiro",
+    "sector": "Kanombe",
+    "pcode": "RW1305",
+    "lat": -1.997749,
+    "lon": 30.149277,
+    "area_km2": 22.999,
+    "poi_total": 38,
+    "poi_counts": {
+      "market": 4,
+      "restaurant": 6,
+      "hospital": 12,
+      "shopping": 6,
+      "bank": 3,
+      "school": 7
+    },
+    "cbd_distance_km": 11.366,
+    "nearest_km": {
+      "school": 1.122,
+      "hospital": 0.524,
+      "bank": 4.006,
+      "market": 0.45
+    },
+    "sector_density_score": 6.3,
+    "accessibility_score": 40.5,
+    "neighborhood_score": 30.9,
+    "investment_score": 39.2
+  },
+  "Kicukiro": {
+    "district": "Kicukiro",
+    "sector": "Kicukiro",
+    "pcode": "RW1306",
+    "lat": -1.973044,
+    "lon": 30.098022,
+    "area_km2": 2.048,
+    "poi_total": 21,
+    "poi_counts": {
+      "market": 2,
+      "bank": 1,
+      "shopping": 5,
+      "restaurant": 7,
+      "hospital": 5,
+      "school": 1
+    },
+    "cbd_distance_km": 5.052,
+    "nearest_km": {
+      "school": 0.681,
+      "hospital": 0.439,
+      "bank": 0.54,
+      "market": 0.158
+    },
+    "sector_density_score": 38.9,
+    "accessibility_score": 65.6,
+    "neighborhood_score": 39.2,
+    "investment_score": 52.8
+  },
+  "Kigarama": {
+    "district": "Kicukiro",
+    "sector": "Kigarama",
+    "pcode": "RW1307",
+    "lat": -1.983591,
+    "lon": 30.066674,
+    "area_km2": 8.362,
+    "poi_total": 12,
+    "poi_counts": {
+      "hospital": 6,
+      "shopping": 4,
+      "school": 2
+    },
+    "cbd_distance_km": 3.845,
+    "nearest_km": {
+      "school": 1.188,
+      "hospital": 0.753,
+      "bank": 1.743,
+      "market": 1.96
+    },
+    "sector_density_score": 5.4,
+    "accessibility_score": 45.3,
+    "neighborhood_score": 23.7,
+    "investment_score": 44.0
+  },
+  "Masaka": {
+    "district": "Kicukiro",
+    "sector": "Masaka",
+    "pcode": "RW1308",
+    "lat": -2.030265,
+    "lon": 30.201814,
+    "area_km2": 52.713,
+    "poi_total": 8,
+    "poi_counts": {
+      "restaurant": 1,
+      "shopping": 1,
+      "hospital": 5,
+      "school": 1
+    },
+    "cbd_distance_km": 18.223,
+    "nearest_km": {
+      "school": 4.649,
+      "hospital": 4.016,
+      "bank": 10.755,
+      "market": 7.202
+    },
+    "sector_density_score": 0.6,
+    "accessibility_score": 5.8,
+    "neighborhood_score": 6.0,
+    "investment_score": 5.8
+  },
+  "Niboye": {
+    "district": "Kicukiro",
+    "sector": "Niboye",
+    "pcode": "RW1309",
+    "lat": -1.976351,
+    "lon": 30.11276,
+    "area_km2": 5.027,
+    "poi_total": 22,
+    "poi_counts": {
+      "bank": 1,
+      "school": 3,
+      "restaurant": 9,
+      "shopping": 1,
+      "hospital": 8
+    },
+    "cbd_distance_km": 6.669,
+    "nearest_km": {
+      "school": 0.253,
+      "hospital": 0.185,
+      "bank": 1.005,
+      "market": 1.09
+    },
+    "sector_density_score": 16.6,
+    "accessibility_score": 58.4,
+    "neighborhood_score": 31.6,
+    "investment_score": 53.5
+  },
+  "Nyarugunga": {
+    "district": "Kicukiro",
+    "sector": "Nyarugunga",
+    "pcode": "RW1310",
+    "lat": -1.976944,
+    "lon": 30.166956,
+    "area_km2": 15.279,
+    "poi_total": 28,
+    "poi_counts": {
+      "school": 7,
+      "hospital": 11,
+      "restaurant": 5,
+      "shopping": 4,
+      "market": 1
+    },
+    "cbd_distance_km": 12.379,
+    "nearest_km": {
+      "school": 0.431,
+      "hospital": 0.213,
+      "bank": 4.632,
+      "market": 2.059
+    },
+    "sector_density_score": 6.9,
+    "accessibility_score": 40.2,
+    "neighborhood_score": 27.7,
+    "investment_score": 38.8
+  }
+}

@@ -128,6 +128,10 @@ export default function LoginScreen({ navigation }) {
 
           {/* Switch to signup */}
           <View style={styles.switchRow}>
+            <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}
+              style={{ marginBottom: 14, alignItems: "center" }}>
+              <Text style={[styles.link, { color: colors.primary, fontSize: 13 }]}>Forgot password?</Text>
+            </TouchableOpacity>
             <Text style={{ color: colors.textSecondary }}>New here? </Text>
             <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
               <Text style={[styles.link, { color: colors.primary }]}>Create an account</Text>

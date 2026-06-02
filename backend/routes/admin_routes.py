@@ -6,6 +6,7 @@
 #                       Refuses to run if DB already has seeded data.
 
 import os
+import hmac
 import random
 import pandas as pd
 from flask import Blueprint, request, jsonify
@@ -132,17 +133,14 @@ def _seed_lands(df, max_records=40):
 # Protected by SEED_SECRET. Wipes ALL DATA.
 @admin_bp.route("/admin/recreate-db", methods=["POST"])
 def recreate_db():
+    if os.environ.get("FLASK_ENV") == "production":
+        return jsonify({"error": "Destructive operation disabled in production"}), 403
     expected = os.environ.get("SEED_SECRET")
     if not expected:
         return jsonify({"error": "SEED_SECRET not configured"}), 500
-
     body = request.get_json(silent=True) or {}
-    provided = (
-        request.headers.get("X-Seed-Secret")
-        or request.args.get("secret")
-        or body.get("secret")
-    )
-    if provided != expected:
+    provided = request.headers.get("X-Seed-Secret") or body.get("secret") or ""
+    if not hmac.compare_digest(provided, expected):
         return jsonify({"error": "Invalid or missing secret"}), 401
 
     db.drop_all()
@@ -162,12 +160,8 @@ def make_admin():
         return jsonify({"error": "SEED_SECRET not configured"}), 500
 
     body = request.get_json(silent=True) or {}
-    provided = (
-        request.headers.get("X-Seed-Secret")
-        or request.args.get("secret")
-        or body.get("secret")
-    )
-    if provided != expected:
+    provided = request.headers.get("X-Seed-Secret") or body.get("secret") or ""
+    if not hmac.compare_digest(provided, expected):
         return jsonify({"error": "Invalid or missing secret"}), 401
 
     email = (body.get("email") or request.args.get("email") or "").strip().lower()
@@ -186,7 +180,7 @@ def make_admin():
     return jsonify({"ok": True, "user": user.to_dict()}), 200
 
 
-@admin_bp.route("/admin/seed", methods=["POST", "GET"])
+@admin_bp.route("/admin/seed", methods=["POST"])
 def seed_database():
     # 1. Verify secret - accept any of:
     #    - Header:        X-Seed-Secret: <secret>
@@ -197,17 +191,9 @@ def seed_database():
         return jsonify({"error": "SEED_SECRET not configured on server"}), 500
 
     body = request.get_json(silent=True) or {}
-    provided = (
-        request.headers.get("X-Seed-Secret")
-        or request.args.get("secret")
-        or body.get("secret")
-    )
-
-    if provided != expected:
-        return jsonify({
-            "error": "Invalid or missing secret",
-            "hint": "Pass via header X-Seed-Secret, ?secret=..., or JSON body {\"secret\": \"...\"}",
-        }), 401
+    provided = request.headers.get("X-Seed-Secret") or body.get("secret") or ""
+    if not hmac.compare_digest(provided, expected):
+        return jsonify({"error": "Invalid or missing secret"}), 401
 
     force = bool(body.get("force") or request.args.get("force"))
 
