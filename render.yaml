@@ -20,7 +20,7 @@ services:
     # eventlet worker is REQUIRED for Flask-SocketIO (chat) - must match Procfile
     # Run migrations idempotently before booting the web worker.
     # migrate.py is safe to run repeatedly - it only adds missing columns.
-    startCommand: python migrate.py && gunicorn --worker-class eventlet -w 1 --timeout 120 app:app
+    startCommand: python migrate.py && gunicorn --worker-class eventlet -w 1 --timeout 120 --bind 0.0.0.0:$PORT app:app
     envVars:
       - key: DATABASE_URL
         fromDatabase:
