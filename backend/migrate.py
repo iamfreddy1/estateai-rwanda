@@ -56,6 +56,7 @@ def main():
     print(f"Migrating ({dialect}): {safe_url}")
 
     bool_false = "FALSE" if dialect == "postgresql" else "0"
+    bool_true  = "TRUE"  if dialect == "postgresql" else "1"
 
     n = 0
     try:
