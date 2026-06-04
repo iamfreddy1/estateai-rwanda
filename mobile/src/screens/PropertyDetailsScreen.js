@@ -15,6 +15,8 @@ import { startConversationApi } from "../api/chat";
 import { trackViewApi } from "../api/insights";
 import RentalCard from "../components/RentalCard";
 import { inquireRental } from "../api/rentals";
+import { getPropertyContact } from "../api/payments";
+import UnlockContactModal from "../components/UnlockContactModal";
 import { useAuth } from "../context/AuthContext";
 import { getColors, spacing, radius } from "../theme/colors";
 import { formatRWF, formatRWFRent } from "../utils/format";
@@ -32,6 +34,9 @@ export default function PropertyDetailsScreen({ route, navigation }) {
   const [error, setError] = useState(null);
   const [contacting, setContacting] = useState(false);
   const [similarItems, setSimilarItems] = useState([]);
+  // ---- contact-unlock state (paid via MoMo/Airtel or owned/premium) ----
+  const [contactInfo, setContactInfo] = useState(null);   // { locked, phone, name, unlock_price_rwf? }
+  const [unlockOpen, setUnlockOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -44,6 +49,8 @@ export default function PropertyDetailsScreen({ route, navigation }) {
     // Track this view in the background (powers trending + recommendations)
     trackViewApi(propertyId);
     getSimilarPropertiesApi(propertyId).then(setSimilarItems).catch(() => {});
+    // Probe whether this user can already see the owner's phone (owner/admin/premium/paid).
+    getPropertyContact(propertyId).then((r) => { if (!cancelled) setContactInfo(r); }).catch(() => {});
 
     return () => { cancelled = true; };
   }, [propertyId]);
@@ -143,9 +150,14 @@ export default function PropertyDetailsScreen({ route, navigation }) {
   }
 
   async function handleCallLandlord() {
-    const phone = property?.owner_phone;
+    // Owner sees their own phone immediately; others must have unlocked it.
+    const phone =
+      (user && property?.user_id === user.id) ? property?.owner_phone
+      : contactInfo?.phone;
+
     if (!phone) {
-      Alert.alert("No phone number", "The landlord has not added a public phone number.");
+      // Trigger the paid-unlock flow (MoMo / Airtel)
+      setUnlockOpen(true);
       return;
     }
     // Log the call inquiry first (fire-and-forget so the dialer opens immediately)
@@ -328,6 +340,35 @@ export default function PropertyDetailsScreen({ route, navigation }) {
               <Text style={{ color: colors.primary, fontWeight: "700" }}>✏️ Edit listing</Text>
             </TouchableOpacity>
           )}
+
+          {/* Contact phone — locked behind MoMo/Airtel unlock unless owned/premium */}
+          {user && property.user_id !== user.id && contactInfo && (
+            contactInfo.locked ? (
+              <TouchableOpacity
+                onPress={() => setUnlockOpen(true)}
+                style={{ marginBottom: 10, padding: 12, borderRadius: 10,
+                         backgroundColor: "#fff7ed", borderColor: "#f59e0b",
+                         borderWidth: 1, alignItems: "center" }}>
+                <Text style={{ color: "#b45309", fontWeight: "700" }}>
+                  🔒 Phone hidden — Unlock for {(contactInfo.unlock_price_rwf || 500).toLocaleString()} RWF
+                </Text>
+                <Text style={{ color: "#92400e", fontSize: 12, marginTop: 4 }}>
+                  Pay with MTN MoMo or Airtel Money to see the owner's number
+                </Text>
+              </TouchableOpacity>
+            ) : contactInfo.phone ? (
+              <View style={{ marginBottom: 10, padding: 12, borderRadius: 10,
+                             backgroundColor: "#ecfdf5", borderColor: "#10b981",
+                             borderWidth: 1 }}>
+                <Text style={{ color: "#065f46", fontWeight: "700" }}>
+                  📞 {contactInfo.phone}
+                </Text>
+                <Text style={{ color: "#065f46", fontSize: 12, marginTop: 2 }}>
+                  Unlocked — tap Call below to dial
+                </Text>
+              </View>
+            ) : null
+          )}
           <TouchableOpacity
             style={[styles.contactBtn, {
               backgroundColor: contacting ? colors.textMuted : colors.primary
@@ -378,6 +419,16 @@ export default function PropertyDetailsScreen({ route, navigation }) {
           </View>
         )}
       </ScrollView>
+
+      {/* MoMo / Airtel unlock modal */}
+      {property && (
+        <UnlockContactModal
+          visible={unlockOpen}
+          onClose={() => setUnlockOpen(false)}
+          property={property}
+          onUnlocked={(c) => setContactInfo(c)}
+        />
+      )}
     </View>
   );
 }

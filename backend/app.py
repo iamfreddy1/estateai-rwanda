@@ -32,6 +32,7 @@ from routes.insights_routes import insights_bp
 from routes.ai_chat_routes import ai_chat_bp
 from routes.admin_dashboard_routes import admin_dash_bp
 from routes.rental_routes import rental_bp
+from routes.payment_routes import pay_bp
 from socketio_app import init_socketio
 
 
@@ -130,6 +131,7 @@ app.register_blueprint(insights_bp)
 app.register_blueprint(ai_chat_bp)
 app.register_blueprint(admin_dash_bp)
 app.register_blueprint(rental_bp)
+app.register_blueprint(pay_bp)
 
 
 # ============================================

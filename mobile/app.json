@@ -15,7 +15,7 @@
     },
     "android": {
       "package": "com.estateai.rwanda",
-      "versionCode": 4,
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#2563eb"

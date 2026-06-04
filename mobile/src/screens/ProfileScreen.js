@@ -97,12 +97,19 @@ export default function ProfileScreen({ navigation }) {
             onPress={() => navigation.getParent()?.navigate("AI")}
           />
           {hasRentals && (
-            <Action
-              emoji="🏘" label="Landlord Dashboard" desc="My rentals & inquiries"
-              color={colors.primary}
-              colors={colors}
-              onPress={() => navigation.navigate("LandlordDashboard")}
-            />
+            <>
+              <Action
+                emoji="🏘" label="Landlord Dashboard" desc="My rentals & inquiries"
+                color={colors.primary}
+                colors={colors}
+                onPress={() => navigation.navigate("LandlordDashboard")}
+              />
+              <Action
+                emoji="⭐" label={user?.is_premium ? "Premium active" : "Go Premium"} desc="Unlimited contact unlocks & boosted listings"
+                color="#f59e0b" colors={colors}
+                onPress={() => navigation.navigate("PremiumUpgrade")}
+              />
+            </>
           )}
           <Action
             emoji="💬" label="AI Assistant" desc="Chat with EstateAI"

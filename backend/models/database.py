@@ -39,6 +39,7 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
     suspended = db.Column(db.Boolean, default=False, nullable=False)
     suspension_reason = db.Column(db.String(300), nullable=True)
+    premium_until = db.Column(db.DateTime, nullable=True)
     role = db.Column(db.String(20), default="user")  # "user" | "agent" | "admin"
 
     # ----- Push notifications -----
@@ -89,6 +90,8 @@ class User(db.Model):
             "verification_status": self.verification_status,
             "is_admin": self.is_admin,
             "suspended": self.suspended,
+            "premium_until": self.premium_until.isoformat() if self.premium_until else None,
+            "is_premium": bool(self.premium_until and self.premium_until > datetime.utcnow()),
             "role": self.role,
             "is_agent": self.agent_status == "approved",
             "agent_status": self.agent_status,
@@ -578,3 +581,50 @@ class EmailVerificationCode(db.Model):
     expires_at = db.Column(db.DateTime, nullable=False, index=True)
     used_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+
+# ============================================
+# PAYMENT  (universal record across MoMo / Airtel / stub)
+# ============================================
+class Payment(db.Model):
+    __tablename__ = "payments"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    provider = db.Column(db.String(20), nullable=False)            # mtn | airtel | stub
+    transaction_id = db.Column(db.String(80), unique=True, nullable=False, index=True)
+    amount = db.Column(db.Float, nullable=False)
+    currency = db.Column(db.String(10), default="RWF")
+    phone = db.Column(db.String(40), nullable=True)
+    status = db.Column(db.String(20), default="pending", index=True)  # pending | success | failed
+    purpose = db.Column(db.String(40), nullable=False)             # contact_unlock | premium
+    target_type = db.Column(db.String(40), nullable=True)
+    target_id = db.Column(db.String(40), nullable=True)
+    reference = db.Column(db.String(80), nullable=True)
+    raw = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id, "provider": self.provider,
+            "transaction_id": self.transaction_id, "amount": self.amount,
+            "currency": self.currency, "status": self.status,
+            "purpose": self.purpose, "target_type": self.target_type,
+            "target_id": self.target_id, "reference": self.reference,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+# ============================================
+# PROPERTY CONTACT UNLOCK
+# ============================================
+# A successful payment unlocks the seller/landlord's phone for ONE property.
+class PropertyContactUnlock(db.Model):
+    __tablename__ = "property_contact_unlocks"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    property_id = db.Column(db.Integer, db.ForeignKey("properties.id"), nullable=False, index=True)
+    payment_id = db.Column(db.Integer, db.ForeignKey("payments.id"), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    __table_args__ = (db.UniqueConstraint("user_id", "property_id", name="uq_user_property_unlock"),)

@@ -7,7 +7,8 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Production backend URL (Render)
-export const API_BASE_URL = "http://localhost:5000";  // USB reverse via adb
+//export const API_BASE_URL = "http://localhost:5000";  // USB reverse via adb
+export const API_BASE_URL = "https://estateai-backend-0ncb.onrender.com";
 
 // For local backend dev, swap the line above for:
 // export const API_BASE_URL = "http://10.89.54.59:5000";

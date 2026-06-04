@@ -63,6 +63,8 @@ def main():
         n += ensure_column(engine, "users", "suspended",          "BOOLEAN", bool_false, not_null=True)
         n += ensure_column(engine, "users", "suspension_reason",  "VARCHAR(300)")
         n += ensure_column(engine, "users", "email_verified",     "BOOLEAN", bool_false, not_null=True)
+        n += ensure_column(engine, "users", "premium_until", "TIMESTAMP")
+
 
         # ---- properties (rental lifecycle + amenities + featured) ----
         n += ensure_column(engine, "properties", "availability",  "VARCHAR(20)", "'available'", not_null=True)
