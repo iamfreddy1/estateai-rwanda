@@ -26,9 +26,28 @@ def init_error_handlers(app, db):
         log.exception("Internal server error: %s", e)
         return jsonify({"error": "Internal server error", "request_id": getattr(g, "request_id", None)}), 500
 
-    # ---- replace /health to also ping the DB ----
+    # ---- /health  -- FAST, no DB ping (used by Render's health check) ----
+    # Render's free tier has a strict startup window. If we pinged the DB here
+    # while Postgres was cold-starting or migrate.py was still finalizing, the
+    # health check would time out and Render would mark the deploy as Failed.
+    # Keep this endpoint cheap and synchronous.
     @app.route("/health", methods=["GET"])
     def health():
+        import os
+        return jsonify({
+            "status": "healthy",
+            "config": {
+                "google_oauth": bool(os.environ.get("GOOGLE_CLIENT_IDS")),
+                "cloudinary": bool(os.environ.get("CLOUDINARY_CLOUD_NAME")),
+                "seed_secret_set": bool(os.environ.get("SEED_SECRET")),
+                "openai": bool(os.environ.get("OPENAI_API_KEY")),
+                "resend": bool(os.environ.get("RESEND_API_KEY")),
+            },
+        }), 200
+
+    # ---- /health/deep  -- full check (DB ping), for manual debugging ----
+    @app.route("/health/deep", methods=["GET"])
+    def health_deep():
         import os
         db_ok = True
         try:
