@@ -15,8 +15,6 @@ import { startConversationApi } from "../api/chat";
 import { trackViewApi } from "../api/insights";
 import RentalCard from "../components/RentalCard";
 import { inquireRental } from "../api/rentals";
-import { getPropertyContact } from "../api/payments";
-import UnlockContactModal from "../components/UnlockContactModal";
 import { useAuth } from "../context/AuthContext";
 import { getColors, spacing, radius } from "../theme/colors";
 import { formatRWF, formatRWFRent } from "../utils/format";
@@ -34,9 +32,6 @@ export default function PropertyDetailsScreen({ route, navigation }) {
   const [error, setError] = useState(null);
   const [contacting, setContacting] = useState(false);
   const [similarItems, setSimilarItems] = useState([]);
-  // ---- contact-unlock state (paid via MoMo/Airtel or owned/premium) ----
-  const [contactInfo, setContactInfo] = useState(null);   // { locked, phone, name, unlock_price_rwf? }
-  const [unlockOpen, setUnlockOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -49,8 +44,6 @@ export default function PropertyDetailsScreen({ route, navigation }) {
     // Track this view in the background (powers trending + recommendations)
     trackViewApi(propertyId);
     getSimilarPropertiesApi(propertyId).then(setSimilarItems).catch(() => {});
-    // Probe whether this user can already see the owner's phone (owner/admin/premium/paid).
-    getPropertyContact(propertyId).then((r) => { if (!cancelled) setContactInfo(r); }).catch(() => {});
 
     return () => { cancelled = true; };
   }, [propertyId]);
@@ -150,20 +143,21 @@ export default function PropertyDetailsScreen({ route, navigation }) {
   }
 
   async function handleCallLandlord() {
-    // Owner sees their own phone immediately; others must have unlocked it.
-    const phone =
-      (user && property?.user_id === user.id) ? property?.owner_phone
-      : contactInfo?.phone;
-
+    // Direct dial — no paywall. Use the seller's actual phone number.
+    const phone = property?.owner_phone;
     if (!phone) {
-      // Trigger the paid-unlock flow (MoMo / Airtel)
-      setUnlockOpen(true);
+      Alert.alert(
+        "No phone number",
+        "The seller has not added a phone number to their profile yet."
+      );
       return;
     }
-    // Log the call inquiry first (fire-and-forget so the dialer opens immediately)
-    if (user && property.user_id !== user.id) {
-      inquireRental(property.id, { kind: "call", message: "Tapped Call from the rental page." })
-        .catch(() => {});
+    // Log the call as an inquiry only for rentals + non-owners (fire-and-forget).
+    if (user && property.user_id !== user.id && property.type === "rent") {
+      inquireRental(property.id, {
+        kind: "call",
+        message: "Tapped Call from the listing page.",
+      }).catch(() => {});
     }
     Linking.openURL(`tel:${phone}`).catch(() =>
       Alert.alert("Couldn't open dialer", "Try copying the number: " + phone)
@@ -341,33 +335,18 @@ export default function PropertyDetailsScreen({ route, navigation }) {
             </TouchableOpacity>
           )}
 
-          {/* Contact phone — locked behind MoMo/Airtel unlock unless owned/premium */}
-          {user && property.user_id !== user.id && contactInfo && (
-            contactInfo.locked ? (
-              <TouchableOpacity
-                onPress={() => setUnlockOpen(true)}
-                style={{ marginBottom: 10, padding: 12, borderRadius: 10,
-                         backgroundColor: "#fff7ed", borderColor: "#f59e0b",
-                         borderWidth: 1, alignItems: "center" }}>
-                <Text style={{ color: "#b45309", fontWeight: "700" }}>
-                  🔒 Phone hidden — Unlock for {(contactInfo.unlock_price_rwf || 500).toLocaleString()} RWF
-                </Text>
-                <Text style={{ color: "#92400e", fontSize: 12, marginTop: 4 }}>
-                  Pay with MTN MoMo or Airtel Money to see the owner's number
-                </Text>
-              </TouchableOpacity>
-            ) : contactInfo.phone ? (
-              <View style={{ marginBottom: 10, padding: 12, borderRadius: 10,
-                             backgroundColor: "#ecfdf5", borderColor: "#10b981",
-                             borderWidth: 1 }}>
-                <Text style={{ color: "#065f46", fontWeight: "700" }}>
-                  📞 {contactInfo.phone}
-                </Text>
-                <Text style={{ color: "#065f46", fontSize: 12, marginTop: 2 }}>
-                  Unlocked — tap Call below to dial
-                </Text>
-              </View>
-            ) : null
+          {/* Seller phone — always visible (direct calling, no paywall) */}
+          {property.owner_phone && property.user_id !== user?.id && (
+            <View style={{ marginBottom: 10, padding: 12, borderRadius: 10,
+                           backgroundColor: "#ecfdf5", borderColor: "#10b981",
+                           borderWidth: 1 }}>
+              <Text style={{ color: "#065f46", fontWeight: "700" }}>
+                📞 {property.owner_phone}
+              </Text>
+              <Text style={{ color: "#065f46", fontSize: 12, marginTop: 2 }}>
+                Tap Call below to dial directly
+              </Text>
+            </View>
           )}
           <TouchableOpacity
             style={[styles.contactBtn, {
@@ -425,15 +404,6 @@ export default function PropertyDetailsScreen({ route, navigation }) {
         )}
       </ScrollView>
 
-      {/* MoMo / Airtel unlock modal */}
-      {property && (
-        <UnlockContactModal
-          visible={unlockOpen}
-          onClose={() => setUnlockOpen(false)}
-          property={property}
-          onUnlocked={(c) => setContactInfo(c)}
-        />
-      )}
     </View>
   );
 }

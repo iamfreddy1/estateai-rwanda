@@ -252,8 +252,27 @@ def delete_property(prop_id):
     if prop.user_id != user_id and not (user and user.is_admin):
         return jsonify({"error": "You can only delete your own listings"}), 403
 
-    db.session.delete(prop)
-    db.session.commit()
+    # Defensive cleanup of FK children before deleting the parent row.
+    # Postgres rejects parent deletes when child rows reference it without
+    # ON DELETE CASCADE on the foreign key.
+    try:
+        from models.database import (
+            PropertyView, RentalInquiry, PropertyContactUnlock,
+            Conversation, Message,
+        )
+        conv_ids = [c.id for c in Conversation.query.filter_by(property_id=prop_id).all()]
+        if conv_ids:
+            Message.query.filter(Message.conversation_id.in_(conv_ids)).delete(synchronize_session=False)
+            Conversation.query.filter_by(property_id=prop_id).delete(synchronize_session=False)
+        PropertyView.query.filter_by(property_id=prop_id).delete(synchronize_session=False)
+        RentalInquiry.query.filter_by(property_id=prop_id).delete(synchronize_session=False)
+        PropertyContactUnlock.query.filter_by(property_id=prop_id).delete(synchronize_session=False)
+        db.session.flush()
+        db.session.delete(prop)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Delete failed: {str(e)[:200]}"}), 500
     return jsonify({"message": "Property deleted"}), 200
 
 
