@@ -385,21 +385,26 @@ export default function PropertyDetailsScreen({ route, navigation }) {
               </Text>
             )}
           </TouchableOpacity>
-          {property.type === "rent" && property.user_id !== user?.id && (
+          {/* Call (always) + Request viewing (rentals only) for non-owners */}
+          {user && property.user_id !== user?.id && (
             <View style={{ flexDirection: "row", marginTop: 10, gap: 8 }}>
-              <TouchableOpacity
-                onPress={handleRequestViewing}
-                style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md,
-                         backgroundColor: "#10b981", alignItems: "center" }}
-              >
-                <Text style={{ color: "#fff", fontWeight: "700" }}>👁 Request viewing</Text>
-              </TouchableOpacity>
+              {property.type === "rent" && (
+                <TouchableOpacity
+                  onPress={handleRequestViewing}
+                  style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md,
+                           backgroundColor: "#10b981", alignItems: "center" }}
+                >
+                  <Text style={{ color: "#fff", fontWeight: "700" }}>👁 Request viewing</Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
                 onPress={handleCallLandlord}
                 style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md,
                          backgroundColor: "#f59e0b", alignItems: "center" }}
               >
-                <Text style={{ color: "#fff", fontWeight: "700" }}>📞 Call</Text>
+                <Text style={{ color: "#fff", fontWeight: "700" }}>
+                  {property.type === "rent" ? "📞 Call" : "📞 Call seller"}
+                </Text>
               </TouchableOpacity>
             </View>
           )}
