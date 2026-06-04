@@ -4,9 +4,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import AdminGuard from "./_AdminGuard";
-import { listPendingProperties, approveProperty, rejectProperty, featureProperty } from "../../api/admin";
+import { listPendingProperties, approveProperty, rejectProperty, featureProperty, flagPropertyPayment } from "../../api/admin";
 
-function Row({ p, onApprove, onReject, onFeature, busy }) {
+function Row({ p, onApprove, onReject, onFeature, onFlagPayment, busy }) {
   const created = p.created_at ? new Date(p.created_at).toLocaleDateString() : "";
   const img = p.image || (p.images && p.images[0]);
   const priceStr = `${Math.round(p.price).toLocaleString()} ${p.currency}`;
@@ -27,6 +27,25 @@ function Row({ p, onApprove, onReject, onFeature, busy }) {
           </p>
           <p className="text-sm mt-1"><b>{priceStr}</b>{p.size_sqft ? ` · ${p.size_sqft} sqft` : ""}{p.bedrooms ? ` · ${p.bedrooms} BR` : ""}</p>
           <p className="text-xs text-gray-400 mt-1">By {p.owner_name} · {created}</p>
+
+          {/* Payment methods preview (admin always sees them) */}
+          {p.payment && (p.payment.methods || []).length > 0 && (
+            <div className={"mt-2 p-2 rounded-md text-xs border " + (
+              p.payment.flagged
+                ? "bg-red-50 border-red-300 text-red-700"
+                : "bg-gray-50 border-gray-200 text-gray-700"
+            )}>
+              <p className="font-semibold mb-1">
+                {p.payment.flagged ? "⚠ Payment flagged" : "💳 Payment methods"}: {(p.payment.methods || []).join(", ")}
+              </p>
+              {p.payment.account_holder_name && <p>Account: {p.payment.account_holder_name}</p>}
+              {p.payment.mtn_number              && <p>MTN: {p.payment.mtn_number}</p>}
+              {p.payment.airtel_number           && <p>Airtel: {p.payment.airtel_number}</p>}
+              {p.payment.bk_account_number       && <p>BK: {p.payment.bk_account_number}</p>}
+              {p.payment.equity_account_number   && <p>Equity: {p.payment.equity_account_number}</p>}
+              {p.payment.flag_reason             && <p className="mt-1 italic">Reason: {p.payment.flag_reason}</p>}
+            </div>
+          )}
         </div>
       </div>
       <div className="flex md:flex-col gap-2 md:w-44">
@@ -42,6 +61,14 @@ function Row({ p, onApprove, onReject, onFeature, busy }) {
           className="flex-1 px-3 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold disabled:opacity-50">
           {busy === p.id ? "…" : (p.featured ? "★ Unfeature" : "☆ Feature")}
         </button>
+        {p.payment && (p.payment.methods || []).length > 0 && (
+          <button disabled={busy === p.id} onClick={() => onFlagPayment(p)}
+            className={"flex-1 px-3 py-2 rounded-lg text-white text-sm font-semibold disabled:opacity-50 " + (
+              p.payment.flagged ? "bg-gray-600 hover:bg-gray-700" : "bg-red-700 hover:bg-red-800"
+            )}>
+            {busy === p.id ? "…" : (p.payment.flagged ? "🔓 Unflag payment" : "🚫 Flag fraud")}
+          </button>
+        )}
       </div>
     </div>
   );
@@ -95,6 +122,20 @@ function AdminPropertiesInner() {
                 const r = await featureProperty(id, !items.find(x => x.id === id)?.featured);
                 setItems(s => s.map(x => x.id === id ? r.property : x));
               }, id)}
+              onFlagPayment={(prop) => {
+                const willFlag = !prop.payment?.flagged;
+                const reason = willFlag
+                  ? window.prompt("Reason for flagging this listing's payment info as fraudulent:", "Account holder mismatch")
+                  : "";
+                if (willFlag && !reason) return;
+                setBusy(prop.id); setErr(null);
+                flagPropertyPayment(prop.id, willFlag, reason || "")
+                  .then(() => setItems(s => s.map(x => x.id === prop.id
+                    ? { ...x, payment: { ...(x.payment || {}), flagged: willFlag, flag_reason: reason || null } }
+                    : x)))
+                  .catch(e => setErr(e.message))
+                  .finally(() => setBusy(null));
+              }}
             />
           ))
         )}

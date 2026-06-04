@@ -27,6 +27,18 @@ function AddPropertyModal({ isOpen, onClose, onCreated }) {
   const [type, setType] = useState("buy");
   const [image, setImage] = useState("");
 
+  // ---- Seller Payment Methods ----
+  const [payment, setPayment] = useState({
+    methods: [], mtn_number: "", airtel_number: "",
+    bk_account_number: "", equity_account_number: "",
+    account_holder_name: "", show_payment_details: true,
+  });
+  const togglePayMethod = (code) => setPayment(p => ({
+    ...p,
+    methods: p.methods.includes(code) ? p.methods.filter(m => m !== code) : [...p.methods, code],
+  }));
+  const setPay = (k, v) => setPayment(p => ({ ...p, [k]: v }));
+
   // UI state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -60,6 +72,14 @@ function AddPropertyModal({ isOpen, onClose, onCreated }) {
         location,
         type,
         image,
+        // ---- Seller payment methods (server validates) ----
+        payment_methods:       payment.methods.join(","),
+        mtn_number:            payment.mtn_number || null,
+        airtel_number:         payment.airtel_number || null,
+        bk_account_number:     payment.bk_account_number || null,
+        equity_account_number: payment.equity_account_number || null,
+        account_holder_name:   payment.account_holder_name || null,
+        show_payment_details:  payment.show_payment_details !== false,
       });
 
       // Notify parent to refresh the listings
@@ -235,6 +255,73 @@ function AddPropertyModal({ isOpen, onClose, onCreated }) {
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="https://... (leave blank for default)"
             />
+          </div>
+
+          {/* ============ SELLER PAYMENT METHODS ============ */}
+          <div className="border-t pt-4 mt-4">
+            <h3 className="font-bold text-gray-900 mb-1">💳 How buyers can pay you</h3>
+            <p className="text-xs text-gray-500 mb-3">Pick all methods you accept. These show on the listing.</p>
+
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              {[
+                { code: "mtn",    label: "MTN MoMo",        color: "yellow" },
+                { code: "airtel", label: "Airtel Money",    color: "red"    },
+                { code: "bk",     label: "Bank of Kigali",  color: "blue"   },
+                { code: "equity", label: "Equity Bank",     color: "purple" },
+              ].map(m => {
+                const active = payment.methods.includes(m.code);
+                return (
+                  <button type="button" key={m.code} onClick={() => togglePayMethod(m.code)}
+                    className={"px-3 py-2 rounded-lg border-2 text-sm font-semibold transition-colors " + (
+                      active
+                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                    )}>
+                    {active ? "✓ " : ""}{m.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {payment.methods.length > 0 && (
+              <div className="space-y-2">
+                <input value={payment.account_holder_name}
+                  onChange={e => setPay("account_holder_name", e.target.value)}
+                  placeholder="Account holder name (full legal name)"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+                {payment.methods.includes("mtn") && (
+                  <input value={payment.mtn_number}
+                    onChange={e => setPay("mtn_number", e.target.value)}
+                    placeholder="MTN MoMo number (0788...)"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                )}
+                {payment.methods.includes("airtel") && (
+                  <input value={payment.airtel_number}
+                    onChange={e => setPay("airtel_number", e.target.value)}
+                    placeholder="Airtel Money number (0732...)"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                )}
+                {payment.methods.includes("bk") && (
+                  <input value={payment.bk_account_number}
+                    onChange={e => setPay("bk_account_number", e.target.value.replace(/\D/g,""))}
+                    placeholder="Bank of Kigali account number"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                )}
+                {payment.methods.includes("equity") && (
+                  <input value={payment.equity_account_number}
+                    onChange={e => setPay("equity_account_number", e.target.value.replace(/\D/g,""))}
+                    placeholder="Equity Bank account number"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                )}
+
+                <label className="flex items-center gap-2 mt-2 text-sm text-gray-700">
+                  <input type="checkbox" checked={payment.show_payment_details !== false}
+                    onChange={e => setPay("show_payment_details", e.target.checked)} />
+                  Show payment details publicly on the listing
+                </label>
+              </div>
+            )}
           </div>
 
           {/* Error message */}

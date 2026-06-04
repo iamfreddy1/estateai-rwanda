@@ -157,3 +157,15 @@ export async function getAIConversationDetail(cid) {
   const res = await fetch(`${API_URL}/admin/ai/conversation/${cid}`, { headers: authHeaders() });
   return await jsonOrThrow(res);
 }
+
+// ============================================
+// NEW: flag / unflag a property's payment details as fraudulent
+// ============================================
+export async function flagPropertyPayment(id, flagged = true, reason = "") {
+  const res = await fetch(`${API_URL}/admin/properties/${id}/flag-payment`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({ flagged, reason }),
+  });
+  return await jsonOrThrow(res);
+}

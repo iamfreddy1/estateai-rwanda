@@ -64,6 +64,16 @@ def main():
         n += ensure_column(engine, "users", "suspension_reason",  "VARCHAR(300)")
         n += ensure_column(engine, "users", "email_verified",     "BOOLEAN", bool_false, not_null=True)
         n += ensure_column(engine, "users", "premium_until", "TIMESTAMP")
+        n += ensure_column(engine, "properties", "payment_methods",       "VARCHAR(120)")
+        n += ensure_column(engine, "properties", "mtn_number",            "VARCHAR(32)")
+        n += ensure_column(engine, "properties", "airtel_number",         "VARCHAR(32)")
+        n += ensure_column(engine, "properties", "bk_account_number",     "VARCHAR(40)")
+        n += ensure_column(engine, "properties", "equity_account_number", "VARCHAR(40)")
+        n += ensure_column(engine, "properties", "account_holder_name",   "VARCHAR(120)")
+        n += ensure_column(engine, "properties", "show_payment_details",  "BOOLEAN", bool_true, not_null=True)
+        n += ensure_column(engine, "properties", "payment_flagged",       "BOOLEAN", bool_false, not_null=True)
+        n += ensure_column(engine, "properties", "payment_flag_reason",   "VARCHAR(200)")
+
 
 
         # ---- properties (rental lifecycle + amenities + featured) ----

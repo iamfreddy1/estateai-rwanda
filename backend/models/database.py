@@ -166,6 +166,20 @@ class Property(db.Model):
     security = db.Column(db.Boolean, nullable=True)
     featured = db.Column(db.Boolean, default=False, nullable=False, index=True)
 
+    # ---- Seller Payment Methods ----
+    # CSV of selected methods: "mtn,airtel,bk,equity"
+    payment_methods         = db.Column(db.String(120), nullable=True)
+    mtn_number              = db.Column(db.String(32),  nullable=True)
+    airtel_number           = db.Column(db.String(32),  nullable=True)
+    bk_account_number       = db.Column(db.String(40),  nullable=True)
+    equity_account_number   = db.Column(db.String(40),  nullable=True)
+    account_holder_name     = db.Column(db.String(120), nullable=True)
+    # Toggle: if False, buyers see "Contact seller to arrange payment" instead.
+    show_payment_details    = db.Column(db.Boolean, default=True, nullable=False)
+    # Admin flag for fraudulent / disputed payment info.
+    payment_flagged         = db.Column(db.Boolean, default=False, nullable=False, index=True)
+    payment_flag_reason     = db.Column(db.String(200), nullable=True)
+
     # ---- Meta ----
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
@@ -239,6 +253,27 @@ class Property(db.Model):
             "owner_phone": self.owner.phone if self.owner else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
+        # ---- Payment methods ----
+        methods = [m.strip() for m in (self.payment_methods or "").split(",") if m.strip()]
+        data["payment_flagged"] = bool(self.payment_flagged)
+        # Owner + admin always see them. Public sees them only if:
+        #   show_payment_details=True AND payment_flagged=False
+        public_visible = self.show_payment_details and not self.payment_flagged
+        if public_visible or include_owner_doc:
+            data["payment"] = {
+                "methods": methods,
+                "mtn_number":            self.mtn_number,
+                "airtel_number":         self.airtel_number,
+                "bk_account_number":     self.bk_account_number,
+                "equity_account_number": self.equity_account_number,
+                "account_holder_name":   self.account_holder_name,
+                "show_payment_details":  self.show_payment_details,
+                "flagged":               bool(self.payment_flagged),
+                "flag_reason":           self.payment_flag_reason if include_owner_doc else None,
+            }
+        else:
+            data["payment"] = {"methods": [], "show_payment_details": False,
+                               "flagged": bool(self.payment_flagged)}
         # ownership_doc_url is sensitive - only include for owner/admin
         if include_owner_doc:
             data["ownership_doc_url"] = self.ownership_doc_url

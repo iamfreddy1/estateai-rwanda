@@ -17,6 +17,7 @@ import { createPropertyApi, attachOwnershipDocApi } from "../api/properties";
 import { uploadImageApi, uploadDocumentApi } from "../api/uploads";
 import FormField from "../components/FormField";
 import ChipPicker from "../components/ChipPicker";
+import PaymentMethodsField from "../components/PaymentMethodsField";
 import {
   DISTRICTS, SECTORS_BY_DISTRICT, PROPERTY_TYPES_HOUSE, ROAD_ACCESS,
 } from "../constants/locations";
@@ -51,6 +52,17 @@ export default function SellScreen({ navigation }) {
   const [landSize, setLandSize] = useState("");
   const [roadAccess, setRoadAccess] = useState("paved");
   const [proximity, setProximity] = useState("");
+
+  // ---- Seller Payment Methods ----
+  const [payment, setPayment] = useState({
+    methods: [],
+    mtn_number: "",
+    airtel_number: "",
+    bk_account_number: "",
+    equity_account_number: "",
+    account_holder_name: "",
+    show_payment_details: true,
+  });
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -140,6 +152,15 @@ export default function SellScreen({ navigation }) {
       } else {
         payload.land_size = landSize ? Number(landSize) : null;
       }
+
+      // ---- Seller payment methods ----
+      payload.payment_methods       = payment.methods.join(",");
+      payload.mtn_number            = payment.mtn_number || null;
+      payload.airtel_number         = payment.airtel_number || null;
+      payload.bk_account_number     = payment.bk_account_number || null;
+      payload.equity_account_number = payment.equity_account_number || null;
+      payload.account_holder_name   = payment.account_holder_name || null;
+      payload.show_payment_details  = payment.show_payment_details !== false;
 
       const newProp = await createPropertyApi(payload);
       Alert.alert(
@@ -303,6 +324,9 @@ export default function SellScreen({ navigation }) {
 
           <FormField label="Distance to city (km)" value={proximity} onChangeText={setProximity}
             placeholder="5" keyboardType="numeric" />
+
+          {/* Seller Payment Methods */}
+          <PaymentMethodsField value={payment} onChange={setPayment} colors={colors} />
 
           {/* Submit */}
           <TouchableOpacity

@@ -18,6 +18,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_jwt_extended import verify_jwt_in_request
 
 from models.database import db, Property, User
+from services.payment_methods import validate_payment_payload
 
 property_bp = Blueprint("property", __name__)
 
@@ -342,6 +343,18 @@ def update_property(prop_id):
             prop.status = "pending"
             changed.append("status->pending")
 
+        # ---- Optional payment-method edit ----
+    if any(k in data for k in (
+        "payment_methods","mtn_number","airtel_number",
+        "bk_account_number","equity_account_number","account_holder_name",
+        "show_payment_details",
+    )):
+        pay_clean, pay_errs = validate_payment_payload(data)
+        if pay_errs:
+            return jsonify({"error": "; ".join(pay_errs)}), 400
+        for k, v in pay_clean.items():
+            setattr(prop, k, v)
+
     db.session.commit()
     return jsonify({"property": prop.to_dict(), "changed": changed}), 200
 
@@ -419,3 +432,37 @@ def reject_property(prop_id):
     prop.rejection_reason = reason
     db.session.commit()
     return jsonify({"message": "Listing rejected", "property": prop.to_dict()}), 200
+
+
+
+# ============================================
+# ADMIN: flag / unflag a property's payment details as fraudulent
+# ============================================
+@property_bp.route("/admin/properties/<int:prop_id>/flag-payment", methods=["POST"])
+@jwt_required()
+def admin_flag_payment(prop_id):
+    """
+    POST body: { "flagged": true|false, "reason": "...optional..." }
+    Setting flagged=True hides payment details from the public to_dict response.
+    Owner + admin still see the data (with flag_reason).
+    """
+    uid = int(get_jwt_identity())
+    me = User.query.get(uid)
+    if not me or not me.is_admin:
+        return jsonify({"error": "Admin access required"}), 403
+
+    prop = Property.query.get(prop_id)
+    if not prop:
+        return jsonify({"error": "Property not found"}), 404
+
+    data = request.get_json(silent=True) or {}
+    prop.payment_flagged = bool(data.get("flagged", True))
+    reason = (data.get("reason") or "").strip()
+    prop.payment_flag_reason = reason[:200] if reason else None
+    db.session.commit()
+    return jsonify({
+        "ok": True,
+        "property_id": prop.id,
+        "payment_flagged": prop.payment_flagged,
+        "payment_flag_reason": prop.payment_flag_reason,
+    }), 200

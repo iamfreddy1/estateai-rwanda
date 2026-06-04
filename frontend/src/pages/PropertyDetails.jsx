@@ -213,9 +213,28 @@ function PropertyDetails() {
               {property.created_at ? `Posted ${new Date(property.created_at).toLocaleDateString()}` : ""}
             </p>
 
-            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors mb-2">
-              📞 Contact Agent
-            </button>
+            {/* Call + WhatsApp + Contact buttons */}
+            {property.owner_phone ? (
+              <>
+                <a
+                  href={`tel:${property.owner_phone}`}
+                  className="block text-center w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-lg transition-colors mb-2"
+                >
+                  📞 Call Seller
+                </a>
+                <a
+                  href={`https://wa.me/${String(property.owner_phone).replace(/\D/g,"").replace(/^0/, "250")}?text=${encodeURIComponent(`Hi! I'm interested in your property "${property.title}" on EstateAI Rwanda.`)}`}
+                  target="_blank" rel="noreferrer"
+                  className="block text-center w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition-colors mb-2"
+                >
+                  💬 WhatsApp Seller
+                </a>
+              </>
+            ) : (
+              <button disabled className="w-full bg-gray-300 text-gray-600 font-bold py-3 rounded-lg mb-2 cursor-not-allowed">
+                📞 Seller phone unavailable
+              </button>
+            )}
             <Link
               to="/estimate-house"
               className="block text-center w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 rounded-lg transition-colors text-sm"
@@ -223,8 +242,85 @@ function PropertyDetails() {
               🤖 Get AI Valuation
             </Link>
           </div>
+
+          {/* ============ PAYMENT INFORMATION ============ */}
+          <PaymentInfoCard payment={property.payment} title={property.title} />
         </div>
       </div>
+    </div>
+  );
+}
+
+// ============================================
+// Payment Information card  (right sidebar)
+// ============================================
+function PaymentInfoCard({ payment, title }) {
+  const pay = payment || {};
+  const methods = pay.methods || [];
+
+  // Flagged listings show a warning instead of details
+  if (pay.flagged) {
+    return (
+      <div className="bg-red-50 border border-red-300 rounded-2xl shadow-md p-6">
+        <h3 className="font-bold text-red-700 mb-2">⚠ Payment details disabled</h3>
+        <p className="text-sm text-red-700">
+          An admin has disabled this listing's payment information. Contact the seller directly to arrange payment.
+        </p>
+      </div>
+    );
+  }
+
+  if (!methods.length || pay.show_payment_details === false) {
+    return (
+      <div className="bg-white rounded-2xl shadow-md p-6">
+        <h3 className="font-bold text-gray-900 mb-2">Payment Information</h3>
+        <p className="text-sm italic text-gray-500">
+          The seller has not published payment details. Contact them directly to arrange payment.
+        </p>
+      </div>
+    );
+  }
+
+  function copy(t) {
+    try { navigator.clipboard.writeText(String(t || "")); } catch {}
+  }
+  function copyAll() {
+    const lines = [`Property: ${title}`, `Account Name: ${pay.account_holder_name || "-"}`];
+    if (methods.includes("mtn") && pay.mtn_number)        lines.push(`MTN Mobile Money: ${pay.mtn_number}`);
+    if (methods.includes("airtel") && pay.airtel_number)  lines.push(`Airtel Money: ${pay.airtel_number}`);
+    if (methods.includes("bk") && pay.bk_account_number)  lines.push(`Bank of Kigali: ${pay.bk_account_number}`);
+    if (methods.includes("equity") && pay.equity_account_number) lines.push(`Equity Bank: ${pay.equity_account_number}`);
+    copy(lines.join("\n"));
+  }
+
+  const Row = ({ icon, label, value }) => value ? (
+    <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+      <div className="flex items-center gap-3 min-w-0">
+        <span className="text-xl">{icon}</span>
+        <div className="min-w-0">
+          <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">{label}</p>
+          <p className="text-gray-900 font-bold truncate">{value}</p>
+        </div>
+      </div>
+      <button onClick={() => copy(value)}
+        className="text-xs font-bold text-blue-600 border border-blue-600 px-3 py-1 rounded hover:bg-blue-50 transition-colors flex-shrink-0">
+        COPY
+      </button>
+    </div>
+  ) : null;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-md p-6">
+      <h3 className="font-bold text-gray-900 mb-3">Payment Information</h3>
+      <Row icon="👤" label="Account Name" value={pay.account_holder_name} />
+      {methods.includes("mtn")    && <Row icon="🟡" label="MTN Mobile Money"   value={pay.mtn_number} />}
+      {methods.includes("airtel") && <Row icon="🔴" label="Airtel Money"        value={pay.airtel_number} />}
+      {methods.includes("bk")     && <Row icon="🏦" label="Bank of Kigali"      value={pay.bk_account_number} />}
+      {methods.includes("equity") && <Row icon="🏦" label="Equity Bank Rwanda"  value={pay.equity_account_number} />}
+      <button onClick={copyAll}
+        className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors">
+        📋 Copy All Payment Details
+      </button>
     </div>
   );
 }
