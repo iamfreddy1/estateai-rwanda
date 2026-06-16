@@ -7,7 +7,7 @@ FAQ = [
     {
         "id": "ai-valuation",
         "category": "AI",
-        "q": "How does EstateAI's price valuation work?",
+        "q": "How does the AI price valuation work?",
         "a": (
             "We combine three signals: (1) a machine-learning model trained on Kigali "
             "property features (size, bedrooms, year built, road access, etc.), "
@@ -109,7 +109,7 @@ FAQ = [
     {
         "id": "identity-verify",
         "category": "App",
-        "q": "Why does EstateAI ask me to verify my identity?",
+        "q": "Why does the system ask me to verify my identity?",
         "a": (
             "Identity verification (Indangamuntu / national ID upload) protects buyers and sellers "
             "from fake listings. Verified users get a green badge, better trust signals, and access "
@@ -124,7 +124,7 @@ FAQ = [
         "a": (
             "Inzu y'amazu 4 mu Kacyiru ihora hagati ya 180M na 350M RWF — bitewe n'ubunini, "
             "imyaka y'inyubako, n'urugero rw'umuhanda. Niba ushaka igiciro cy'ukuri ku nyubako "
-            "yawe, koresha igikoresho cyo gutekereza cy'EstateAI (House Estimate)."
+            "yawe, koresha igikoresho cyo gutekereza cy'AI (House Estimate)."
         ),
     },
 ]

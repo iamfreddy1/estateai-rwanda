@@ -14,7 +14,7 @@ log = logging.getLogger("llm")
 MODEL = os.environ.get("LLM_MODEL", "gpt-4o-mini")
 MAX_OUTPUT_TOKENS = int(os.environ.get("LLM_MAX_OUTPUT_TOKENS", "600"))
 
-SYSTEM_PROMPT = """You are EstateAI, the friendly, expert real-estate assistant for Rwanda, with deep knowledge of Kigali.
+SYSTEM_PROMPT = """You are the AI assistant of the AI-Based Property Valuation System, a friendly, expert real-estate assistant for Rwanda, with deep knowledge of Kigali.
 
 CORE TOPICS (lead with these, in this order of priority):
 - buying / selling / renting houses, land, apartments, and commercial property in Rwanda

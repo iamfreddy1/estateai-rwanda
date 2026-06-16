@@ -45,7 +45,7 @@ function Navbar({
         {/* LOGO */}
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity flex-shrink-0">
           <span className="text-3xl">🏡</span>
-          <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">EstateAI</span>
+          <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">AI Property Valuation</span>
           <span className="text-xs bg-yellow-400 text-gray-900 px-1.5 py-0.5 rounded font-bold hidden sm:inline">RW</span>
         </Link>
 

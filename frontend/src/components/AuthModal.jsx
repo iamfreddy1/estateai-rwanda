@@ -145,7 +145,7 @@ function AuthModal({ isOpen, onClose, onAuthSuccess, defaultTab = "login" }) {
             {mode === "forgot" && (forgotStep === 1 ? "Reset password" : "Enter reset code")}
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-            {mode === "login" && "Sign in to continue to EstateAI Rwanda."}
+            {mode === "login" && "Sign in to continue to the AI-Based Property Valuation System."}
             {mode === "signup" && "Join the smartest real estate platform in Kigali."}
             {mode === "forgot" && forgotStep === 1 && "We'll email you a 6-digit code."}
             {mode === "forgot" && forgotStep === 2 && "Type the 6-digit code we sent + your new password."}

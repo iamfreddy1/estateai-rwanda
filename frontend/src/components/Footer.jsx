@@ -13,7 +13,7 @@ function Footer() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <span className="text-2xl">🏡</span>
-            <span className="text-xl font-bold text-white">EstateAI</span>
+            <span className="text-xl font-bold text-white">AI Property Valuation</span>
             <span className="text-xs bg-yellow-400 text-gray-900 px-1.5 py-0.5 rounded font-bold">RW</span>
           </div>
           <p className="text-sm leading-relaxed">
@@ -53,7 +53,7 @@ function Footer() {
       </div>
 
       <div className="border-t border-gray-700 mt-10 pt-6 text-center text-xs text-gray-500">
-        © 2026 EstateAI Rwanda. Built with Flask, React, and scikit-learn.
+        © 2026 AI-Based Property Valuation System. Built with Flask, React, and scikit-learn.
       </div>
     </footer>
   );

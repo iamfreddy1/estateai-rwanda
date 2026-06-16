@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="Times New Roman, serif">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="600" y="38" text-anchor="middle" font-size="22" font-weight="bold" fill="#1f3864">
+    Comparison Workflow: Existing Platforms vs. EstateAI Rwanda
+  </text>
+
+  <!-- ============= EXISTING PLATFORMS (TOP) ============= -->
+  <rect x="40" y="70" width="1120" height="300" fill="#fff5f5" stroke="#c53030" stroke-width="2" rx="8"/>
+  <text x="60" y="100" font-size="18" font-weight="bold" fill="#c53030">EXISTING PLATFORMS (Zillow / Property24 / Local Websites)</text>
+
+  <!-- Boxes for existing workflow -->
+  <g font-size="13" fill="#2d2d2d">
+    <!-- Step 1 -->
+    <rect x="60" y="125" width="170" height="80" rx="8" fill="#ffffff" stroke="#c53030" stroke-width="1.5"/>
+    <text x="145" y="155" text-anchor="middle" font-weight="bold">User opens</text>
+    <text x="145" y="174" text-anchor="middle">website / app</text>
+    <text x="145" y="193" text-anchor="middle" font-style="italic" fill="#888">(no AI tools)</text>
+
+    <!-- Arrow -->
+    <path d="M 230 165 L 270 165" stroke="#c53030" stroke-width="2" marker-end="url(#arrowRed)"/>
+
+    <!-- Step 2 -->
+    <rect x="275" y="125" width="170" height="80" rx="8" fill="#ffffff" stroke="#c53030" stroke-width="1.5"/>
+    <text x="360" y="155" text-anchor="middle" font-weight="bold">Browse classified</text>
+    <text x="360" y="174" text-anchor="middle">listings</text>
+    <text x="360" y="193" text-anchor="middle" font-style="italic" fill="#888">(no verification)</text>
+
+    <path d="M 445 165 L 485 165" stroke="#c53030" stroke-width="2" marker-end="url(#arrowRed)"/>
+
+    <!-- Step 3 -->
+    <rect x="490" y="125" width="170" height="80" rx="8" fill="#ffffff" stroke="#c53030" stroke-width="1.5"/>
+    <text x="575" y="155" text-anchor="middle" font-weight="bold">Read agent</text>
+    <text x="575" y="174" text-anchor="middle">contact info</text>
+    <text x="575" y="193" text-anchor="middle" font-style="italic" fill="#888">(no AI price)</text>
+
+    <path d="M 660 165 L 700 165" stroke="#c53030" stroke-width="2" marker-end="url(#arrowRed)"/>
+
+    <!-- Step 4 -->
+    <rect x="705" y="125" width="170" height="80" rx="8" fill="#ffffff" stroke="#c53030" stroke-width="1.5"/>
+    <text x="790" y="155" text-anchor="middle" font-weight="bold">Call agent and</text>
+    <text x="790" y="174" text-anchor="middle">negotiate price</text>
+    <text x="790" y="193" text-anchor="middle" font-style="italic" fill="#888">(unverified)</text>
+
+    <path d="M 875 165 L 915 165" stroke="#c53030" stroke-width="2" marker-end="url(#arrowRed)"/>
+
+    <!-- Step 5 -->
+    <rect x="920" y="125" width="190" height="80" rx="8" fill="#ffffff" stroke="#c53030" stroke-width="1.5"/>
+    <text x="1015" y="155" text-anchor="middle" font-weight="bold">Pay offline</text>
+    <text x="1015" y="174" text-anchor="middle">(cash / direct)</text>
+    <text x="1015" y="193" text-anchor="middle" font-style="italic" fill="#888">(no integration)</text>
+  </g>
+
+  <!-- Problems area -->
+  <rect x="60" y="225" width="1050" height="130" rx="8" fill="#ffe5e5" stroke="#c53030" stroke-width="1"/>
+  <text x="80" y="252" font-size="15" font-weight="bold" fill="#c53030">Key Problems:</text>
+  <g font-size="13" fill="#2d2d2d">
+    <text x="80" y="278">• No AI tool to estimate a fair property price</text>
+    <text x="80" y="300">• No verification of listings — high risk of rental fraud</text>
+    <text x="80" y="322">• No integration with MTN Mobile Money or Airtel Money</text>
+    <text x="80" y="344">• No use of Rwandan administrative geography (districts, sectors, cells)</text>
+    <text x="620" y="278">• No way to compare similar properties in the same sector</text>
+    <text x="620" y="300">• Limited or missing real-time chat between buyer and seller</text>
+    <text x="620" y="322">• Limited mobile-first design for the African market</text>
+    <text x="620" y="344">• No admin moderation to remove fraudulent listings</text>
+  </g>
+
+  <!-- DOWN ARROW BETWEEN SECTIONS -->
+  <g>
+    <path d="M 600 380 L 600 420" stroke="#1f3864" stroke-width="4" marker-end="url(#arrowDown)"/>
+    <text x="600" y="408" text-anchor="middle" font-size="13" font-style="italic" fill="#1f3864"></text>
+  </g>
+
+  <!-- ============= PROPOSED ESTATEAI RWANDA (BOTTOM) ============= -->
+  <rect x="40" y="430" width="1120" height="340" fill="#f0fff4" stroke="#2f855a" stroke-width="2" rx="8"/>
+  <text x="60" y="460" font-size="18" font-weight="bold" fill="#2f855a">PROPOSED SYSTEM: EstateAI Rwanda</text>
+
+  <g font-size="13" fill="#2d2d2d">
+    <!-- Step 1 -->
+    <rect x="60" y="485" width="170" height="80" rx="8" fill="#ffffff" stroke="#2f855a" stroke-width="1.5"/>
+    <text x="145" y="515" text-anchor="middle" font-weight="bold">User opens mobile</text>
+    <text x="145" y="534" text-anchor="middle">app / web</text>
+    <text x="145" y="553" text-anchor="middle" font-style="italic" fill="#666">(secure login)</text>
+
+    <path d="M 230 525 L 270 525" stroke="#2f855a" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+    <!-- Step 2 -->
+    <rect x="275" y="485" width="170" height="80" rx="8" fill="#ffffff" stroke="#2f855a" stroke-width="1.5"/>
+    <text x="360" y="510" text-anchor="middle" font-weight="bold">Browse verified</text>
+    <text x="360" y="528" text-anchor="middle">listings with</text>
+    <text x="360" y="546" text-anchor="middle">filters &amp; AI rank</text>
+
+    <path d="M 445 525 L 485 525" stroke="#2f855a" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+    <!-- Step 3 -->
+    <rect x="490" y="485" width="170" height="80" rx="8" fill="#ffffff" stroke="#2f855a" stroke-width="1.5"/>
+    <text x="575" y="510" text-anchor="middle" font-weight="bold">Get AI price</text>
+    <text x="575" y="528" text-anchor="middle">prediction</text>
+    <text x="575" y="546" text-anchor="middle" font-style="italic" fill="#666">(ML + geo)</text>
+
+    <path d="M 660 525 L 700 525" stroke="#2f855a" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+    <!-- Step 4 -->
+    <rect x="705" y="485" width="170" height="80" rx="8" fill="#ffffff" stroke="#2f855a" stroke-width="1.5"/>
+    <text x="790" y="510" text-anchor="middle" font-weight="bold">Contact seller</text>
+    <text x="790" y="528" text-anchor="middle">(Call / WhatsApp</text>
+    <text x="790" y="546" text-anchor="middle">/ Real-time chat)</text>
+
+    <path d="M 875 525 L 915 525" stroke="#2f855a" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+    <!-- Step 5 -->
+    <rect x="920" y="485" width="190" height="80" rx="8" fill="#ffffff" stroke="#2f855a" stroke-width="1.5"/>
+    <text x="1015" y="510" text-anchor="middle" font-weight="bold">Pay via MTN MoMo,</text>
+    <text x="1015" y="528" text-anchor="middle">Airtel, BK, or Equity</text>
+    <text x="1015" y="546" text-anchor="middle" font-style="italic" fill="#666">(in-app details)</text>
+  </g>
+
+  <!-- Benefits area -->
+  <rect x="60" y="585" width="1050" height="170" rx="8" fill="#e6ffed" stroke="#2f855a" stroke-width="1"/>
+  <text x="80" y="612" font-size="15" font-weight="bold" fill="#2f855a">Key Benefits:</text>
+  <g font-size="13" fill="#2d2d2d">
+    <text x="80" y="638">✓  AI-based price prediction using Random Forest + Gradient Boosting (Stacking ensemble)</text>
+    <text x="80" y="660">✓  Custom geospatial engine: 35 Kigali sectors, 159 cells, 780 points of interest</text>
+    <text x="80" y="682">✓  Admin moderation queue with verification and fraud-flagging tools</text>
+    <text x="80" y="704">✓  Mobile Money integration: MTN MoMo, Airtel Money, Bank of Kigali, Equity Bank</text>
+    <text x="80" y="726">✓  Secure authentication: JWT tokens, bcrypt passwords, email verification, Google sign-in</text>
+    <text x="80" y="748">✓  Mobile-first design built with React Native, deployed on Render cloud platform</text>
+  </g>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#c53030"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2f855a"/>
+    </marker>
+    <marker id="arrowDown" markerWidth="12" markerHeight="12" refX="6" refY="11" orient="auto">
+      <path d="M0,0 L12,0 L6,11 z" fill="#1f3864"/>
+    </marker>
+  </defs>
+</svg>

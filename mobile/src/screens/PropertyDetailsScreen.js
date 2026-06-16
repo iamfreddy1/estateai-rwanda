@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import {
   View, Text, ScrollView, Image, TouchableOpacity, StyleSheet,
   ActivityIndicator, useColorScheme, Alert, Linking, FlatList, Dimensions,
-  Share, Clipboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getPropertyApi, deletePropertyApi, getSimilarPropertiesApi } from "../api/properties";
@@ -144,75 +143,19 @@ export default function PropertyDetailsScreen({ route, navigation }) {
   }
 
   async function handleCallLandlord() {
-    // Direct dial — no paywall. Use the seller's actual phone number.
     const phone = property?.owner_phone;
     if (!phone) {
-      Alert.alert(
-        "No phone number",
-        "The seller has not added a phone number to their profile yet."
-      );
+      Alert.alert("No phone number", "The landlord has not added a public phone number.");
       return;
     }
-    // Log the call as an inquiry only for rentals + non-owners (fire-and-forget).
-    if (user && property.user_id !== user.id && property.type === "rent") {
-      inquireRental(property.id, {
-        kind: "call",
-        message: "Tapped Call from the listing page.",
-      }).catch(() => {});
+    // Log the call inquiry first (fire-and-forget so the dialer opens immediately)
+    if (user && property.user_id !== user.id) {
+      inquireRental(property.id, { kind: "call", message: "Tapped Call from the rental page." })
+        .catch(() => {});
     }
     Linking.openURL(`tel:${phone}`).catch(() =>
       Alert.alert("Couldn't open dialer", "Try copying the number: " + phone)
     );
-  }
-
-  // ------- WhatsApp ---------------------------------------------------------
-  // Tries the native deep link first (whatsapp://); if WhatsApp isn't installed
-  // it falls back to the wa.me web URL which opens in the browser / store.
-  async function handleWhatsApp() {
-    const phone = property?.owner_phone;
-    if (!phone) {
-      Alert.alert("No phone number", "Seller has not added a phone number.");
-      return;
-    }
-    const digits = String(phone).replace(/\D/g, "");
-    const msisdn = digits.startsWith("250") ? digits
-                : digits.startsWith("0") ? "250" + digits.slice(1)
-                : digits;
-    const msg = encodeURIComponent(
-      `Hi! I'm interested in your property "${property.title}" on EstateAI Rwanda.`
-    );
-    const native = `whatsapp://send?phone=${msisdn}&text=${msg}`;
-    const web    = `https://wa.me/${msisdn}?text=${msg}`;
-    try {
-      const ok = await Linking.canOpenURL(native);
-      Linking.openURL(ok ? native : web);
-    } catch {
-      Linking.openURL(web).catch(() =>
-        Alert.alert("Couldn't open WhatsApp", `Send a message to: ${phone}`)
-      );
-    }
-  }
-
-  // ------- Clipboard helpers ------------------------------------------------
-  function copyToClipboard(text) {
-    try { Clipboard.setString(String(text || "")); } catch {}
-    Alert.alert("Copied", "Copied to clipboard");
-  }
-
-  function copyAllPaymentDetails(pay) {
-    const lines = [`Property: ${property.title}`,
-                   `Account Name: ${pay.account_holder_name || "-"}`];
-    if ((pay.methods || []).includes("mtn") && pay.mtn_number)
-      lines.push(`MTN Mobile Money: ${pay.mtn_number}`);
-    if ((pay.methods || []).includes("airtel") && pay.airtel_number)
-      lines.push(`Airtel Money: ${pay.airtel_number}`);
-    if ((pay.methods || []).includes("bk") && pay.bk_account_number)
-      lines.push(`Bank of Kigali: ${pay.bk_account_number}`);
-    if ((pay.methods || []).includes("equity") && pay.equity_account_number)
-      lines.push(`Equity Bank: ${pay.equity_account_number}`);
-    const text = lines.join("\n");
-    try { Clipboard.setString(text); } catch {}
-    Alert.alert("Copied", "All payment details copied to clipboard");
   }
 
   async function handleDelete() {
@@ -371,7 +314,7 @@ export default function PropertyDetailsScreen({ route, navigation }) {
         {/* OWNER */}
         <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border, marginBottom: spacing.xxl }]}>
           <Text style={[styles.label, { color: colors.textMuted }]}>LISTED BY</Text>
-          <Text style={[styles.ownerName, { color: colors.text }]}>{property.owner_name || "EstateAI"}</Text>
+          <Text style={[styles.ownerName, { color: colors.text }]}>{property.owner_name || "AI Property Valuation"}</Text>
           {property.created_at && (
             <Text style={[styles.coords, { color: colors.textMuted }]}>
               Posted {new Date(property.created_at).toLocaleDateString()}
@@ -384,20 +327,6 @@ export default function PropertyDetailsScreen({ route, navigation }) {
                        borderColor: colors.primary, borderWidth: 1, alignItems: "center" }}>
               <Text style={{ color: colors.primary, fontWeight: "700" }}>✏️ Edit listing</Text>
             </TouchableOpacity>
-          )}
-
-          {/* Seller phone — always visible (direct calling, no paywall) */}
-          {property.owner_phone && property.user_id !== user?.id && (
-            <View style={{ marginBottom: 10, padding: 12, borderRadius: 10,
-                           backgroundColor: "#ecfdf5", borderColor: "#10b981",
-                           borderWidth: 1 }}>
-              <Text style={{ color: "#065f46", fontWeight: "700" }}>
-                📞 {property.owner_phone}
-              </Text>
-              <Text style={{ color: "#065f46", fontSize: 12, marginTop: 2 }}>
-                Tap Call below to dial directly
-              </Text>
-            </View>
           )}
           <TouchableOpacity
             style={[styles.contactBtn, {
@@ -415,102 +344,26 @@ export default function PropertyDetailsScreen({ route, navigation }) {
               </Text>
             )}
           </TouchableOpacity>
-          {/* Call (always) + Request viewing (rentals only) for non-owners */}
-          {user && property.user_id !== user?.id && (
+          {property.type === "rent" && property.user_id !== user?.id && (
             <View style={{ flexDirection: "row", marginTop: 10, gap: 8 }}>
-              {property.type === "rent" && (
-                <TouchableOpacity
-                  onPress={handleRequestViewing}
-                  style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md,
-                           backgroundColor: "#10b981", alignItems: "center" }}
-                >
-                  <Text style={{ color: "#fff", fontWeight: "700" }}>👁 Request viewing</Text>
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity
+                onPress={handleRequestViewing}
+                style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md,
+                         backgroundColor: "#10b981", alignItems: "center" }}
+              >
+                <Text style={{ color: "#fff", fontWeight: "700" }}>👁 Request viewing</Text>
+              </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleCallLandlord}
                 style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md,
                          backgroundColor: "#f59e0b", alignItems: "center" }}
               >
-                <Text style={{ color: "#fff", fontWeight: "700" }}>
-                  {property.type === "rent" ? "📞 Call" : "📞 Call seller"}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleWhatsApp}
-                style={{ flex: 1, paddingVertical: 12, borderRadius: radius.md,
-                         backgroundColor: "#25d366", alignItems: "center" }}
-              >
-                <Text style={{ color: "#fff", fontWeight: "700" }}>💬 WhatsApp</Text>
+                <Text style={{ color: "#fff", fontWeight: "700" }}>📞 Call</Text>
               </TouchableOpacity>
             </View>
           )}
         </View>
-
-        {/* ============ PAYMENT INFORMATION ============ */}
-        {(() => {
-          const pay = property.payment || {};
-          const methods = pay.methods || [];
-          const isOwner = user && property.user_id === user.id;
-          if (pay.flagged && !isOwner) {
-            return (
-              <View style={[styles.card, { backgroundColor: "#fee2e2", borderColor: "#dc2626",
-                                            marginBottom: spacing.xxl }]}>
-                <Text style={{ color: "#b91c1c", fontWeight: "700" }}>
-                  Payment details disabled
-                </Text>
-                <Text style={{ color: "#b91c1c", marginTop: 4, fontSize: 13 }}>
-                  An admin has disabled this listing's payment information. Contact the seller directly.
-                </Text>
-              </View>
-            );
-          }
-          if (!methods.length || pay.show_payment_details === false) {
-            return (
-              <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border,
-                                            marginBottom: spacing.xxl }]}>
-                <Text style={[styles.label, { color: colors.textMuted }]}>PAYMENT INFORMATION</Text>
-                <Text style={{ color: colors.textMuted, fontStyle: "italic", marginTop: 4 }}>
-                  The seller has not published payment details. Contact them to arrange payment.
-                </Text>
-              </View>
-            );
-          }
-          return (
-            <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border,
-                                          marginBottom: spacing.xxl }]}>
-              <Text style={[styles.label, { color: colors.textMuted }]}>PAYMENT INFORMATION</Text>
-              {pay.account_holder_name && (
-                <PaymentRow colors={colors} icon="👤" label="Account Name"
-                            value={pay.account_holder_name} onCopy={copyToClipboard} />
-              )}
-              {methods.includes("mtn") && pay.mtn_number && (
-                <PaymentRow colors={colors} icon="🟡" label="MTN Mobile Money"
-                            value={pay.mtn_number} onCopy={copyToClipboard} />
-              )}
-              {methods.includes("airtel") && pay.airtel_number && (
-                <PaymentRow colors={colors} icon="🔴" label="Airtel Money"
-                            value={pay.airtel_number} onCopy={copyToClipboard} />
-              )}
-              {methods.includes("bk") && pay.bk_account_number && (
-                <PaymentRow colors={colors} icon="🏦" label="Bank of Kigali"
-                            value={pay.bk_account_number} onCopy={copyToClipboard} />
-              )}
-              {methods.includes("equity") && pay.equity_account_number && (
-                <PaymentRow colors={colors} icon="🏦" label="Equity Bank Rwanda"
-                            value={pay.equity_account_number} onCopy={copyToClipboard} />
-              )}
-              <TouchableOpacity
-                onPress={() => copyAllPaymentDetails(pay)}
-                style={{ marginTop: 12, paddingVertical: 12, borderRadius: radius.md,
-                         backgroundColor: colors.primary, alignItems: "center" }}>
-                <Text style={{ color: "#fff", fontWeight: "700" }}>📋 Copy All Payment Details</Text>
-              </TouchableOpacity>
-            </View>
-          );
-        })()}
-
-        {similarItems.length > 0 && (
+{similarItems.length > 0 && (
           <View style={{ marginTop: 8, marginBottom: 24 }}>
             <Text style={{ color: colors.text, fontSize: 16, fontWeight: "800", marginLeft: 16, marginBottom: 6 }}>
               Similar properties
@@ -525,28 +378,6 @@ export default function PropertyDetailsScreen({ route, navigation }) {
           </View>
         )}
       </ScrollView>
-    </View>
-  );
-}
-
-function PaymentRow({ colors, icon, label, value, onCopy }) {
-  return (
-    <View style={{ flexDirection: "row", alignItems: "center", paddingVertical: 10,
-                   borderBottomWidth: 1, borderBottomColor: colors.border }}>
-      <Text style={{ fontSize: 18, marginRight: 8 }}>{icon}</Text>
-      <View style={{ flex: 1 }}>
-        <Text style={{ color: colors.textMuted, fontSize: 11, fontWeight: "700", letterSpacing: 0.3 }}>
-          {label.toUpperCase()}
-        </Text>
-        <Text style={{ color: colors.text, fontSize: 15, fontWeight: "700", marginTop: 2 }}>
-          {value}
-        </Text>
-      </View>
-      <TouchableOpacity onPress={() => onCopy(value)}
-        style={{ paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8,
-                 borderWidth: 1, borderColor: colors.primary }}>
-        <Text style={{ color: colors.primary, fontWeight: "700", fontSize: 12 }}>COPY</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -567,21 +398,64 @@ function Spec({ colors, icon, label, value }) {
   );
 }
 
+function Tag({ color, text }) {
+  return (
+    <View style={{ backgroundColor: color + "20", paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, marginRight: 6, marginBottom: 6 }}>
+      <Text style={{ color, fontSize: 11, fontWeight: "700" }}>{text}</Text>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  wrap: { flex: 1 },
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  heroImage: { width: "100%", height: 280 },
-  body: { padding: 16 },
-  title: { fontSize: 22, fontWeight: "800" },
-  price: { fontSize: 24, fontWeight: "800", marginTop: 4 },
-  sub: { fontSize: 14, marginTop: 4 },
-  card: { padding: 14, borderRadius: 14, borderWidth: 1, marginTop: 12 },
-  label: { fontSize: 11, fontWeight: "700", letterSpacing: 0.4 },
-  ownerName: { fontSize: 16, fontWeight: "700", marginTop: 4 },
+  container: { flex: 1 },
+  center: { flex: 1, alignItems: "center", justifyContent: "center", padding: spacing.xl },
+  errTitle: { fontSize: 22, fontWeight: "800", marginTop: spacing.md },
+  heroWrap: { width: "100%", height: 320, position: "relative" },
+  heroImage: { width: "100%", height: "100%" },
+  backWrap: {
+    position: "absolute", top: 0, left: 0,
+  },
+  backBtn: {
+    margin: spacing.md, width: 40, height: 40, borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.92)",
+    alignItems: "center", justifyContent: "center",
+  },
+  backText: { fontSize: 22, fontWeight: "800", color: "#111" },
+  badge: {
+    position: "absolute", top: 16, right: 16,
+    paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999,
+  },
+  badgeText: { color: "#fff", fontWeight: "800", fontSize: 11, letterSpacing: 0.5 },
+  heroOverlay: {
+    position: "absolute", left: 16, right: 16, bottom: 16,
+  },
+  heroTitle: {
+    color: "#fff", fontSize: 26, fontWeight: "800",
+    textShadowColor: "rgba(0,0,0,0.6)", textShadowRadius: 6, textShadowOffset: { width: 0, height: 2 },
+  },
+  heroLoc: { color: "rgba(255,255,255,0.95)", fontSize: 14, marginTop: 4, fontWeight: "600" },
+
+  card: {
+    margin: spacing.lg, padding: spacing.lg,
+    borderRadius: radius.xl, borderWidth: 1,
+    elevation: 1,
+    shadowColor: "#000", shadowOpacity: 0.04, shadowRadius: 6, shadowOffset: { width: 0, height: 2 },
+  },
+  priceLabel: { fontSize: 11, fontWeight: "800", letterSpacing: 0.5 },
+  priceLg: { fontSize: 36, fontWeight: "800", marginTop: 2 },
+  priceFull: { fontSize: 13, marginTop: 2 },
+  deleteBtn: {
+    marginTop: spacing.lg, paddingVertical: 10, borderRadius: radius.md, alignItems: "center",
+  },
+  sectionTitle: { fontSize: 18, fontWeight: "800", marginBottom: spacing.md },
+  specsGrid: { flexDirection: "row", flexWrap: "wrap" },
+  specItem: { width: "50%", flexDirection: "row", alignItems: "flex-start", paddingVertical: 8 },
+  tags: { flexDirection: "row", flexWrap: "wrap", marginTop: spacing.md },
+  locationText: { fontSize: 14 },
   coords: { fontSize: 12, marginTop: 4 },
-  specGrid: { flexDirection: "row", flexWrap: "wrap", marginTop: 8 },
-  specItem: { flexDirection: "row", alignItems: "center", width: "50%",
-              paddingVertical: 8 },
-  contactBtn: { padding: 14, borderRadius: 12, alignItems: "center", marginTop: 10 },
+  label: { fontSize: 11, fontWeight: "800", letterSpacing: 0.5 },
+  ownerName: { fontSize: 18, fontWeight: "700", marginTop: 4 },
+  contactBtn: { marginTop: spacing.lg, paddingVertical: 14, borderRadius: radius.lg, alignItems: "center" },
+  button: { paddingVertical: 12, paddingHorizontal: spacing.xl, borderRadius: radius.lg },
   buttonText: { color: "#fff", fontWeight: "700", fontSize: 15 },
 });

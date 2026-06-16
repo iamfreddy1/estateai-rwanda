@@ -426,7 +426,7 @@ function Sell() {
                 ) : "Publish Listing 🚀"}
               </button>
               <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-3">
-                By listing, you agree to EstateAI's terms.
+                By listing, you agree to our terms.
               </p>
             </div>
 

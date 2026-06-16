@@ -105,7 +105,7 @@ export default function AIChatScreen({ route }) {
       >
         {!mine && (
           <Text style={{ color: colors.textMuted, fontSize: 11, marginBottom: 4 }}>
-            {item.fromFAQ ? "📚 EstateAI · Quick answer" : "🤖 EstateAI"}
+            {item.fromFAQ ? "📚 AI Assistant · Quick answer" : "🤖 AI Assistant"}
           </Text>
         )}
         <Text style={{ color: mine ? "#fff" : colors.text, fontSize: 15, lineHeight: 21 }}>
@@ -147,7 +147,7 @@ export default function AIChatScreen({ route }) {
           showPrompts ? (
             <View style={{ paddingHorizontal: 16, paddingTop: 12 }}>
               <Text style={{ color: colors.text, fontSize: 22, fontWeight: "700", marginBottom: 6 }}>
-                Hi! I’m EstateAI 🇷🇼
+                Hi! I’m your AI Property Assistant 🇷🇼
               </Text>
               <Text style={{ color: colors.textMuted, fontSize: 14, marginBottom: 18, lineHeight: 20 }}>
                 Tap a common question for an instant answer, or type your own to ask the AI.
@@ -197,7 +197,7 @@ export default function AIChatScreen({ route }) {
               >
                 <ActivityIndicator color={colors.primary} size="small" />
                 <Text style={{ color: colors.textMuted, marginLeft: 8, fontSize: 13 }}>
-                  EstateAI is typing…
+                  AI Assistant is typing…
                 </Text>
               </View>
             </View>
@@ -230,7 +230,7 @@ export default function AIChatScreen({ route }) {
         <TextInput
           value={input}
           onChangeText={setInput}
-          placeholder="Ask EstateAI…"
+          placeholder="Ask the AI Assistant…"
           placeholderTextColor={colors.textMuted}
           editable={!sending}
           multiline

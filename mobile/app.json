@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "EstateAI Rwanda",
+    "name": "AI Property Valuation",
     "slug": "estateai-rwanda",
      "scheme": "estateai",
     "version": "1.7.0",
@@ -51,7 +51,7 @@
       "icon": "./assets/adaptive-icon.png",
       "color": "#2563eb",
       "androidMode": "default",
-      "androidCollapsedTitle": "EstateAI"
+      "androidCollapsedTitle": "AI Property Valuation"
     }
   }
 }

@@ -208,7 +208,7 @@ function PropertyDetails() {
         <div className="space-y-6">
           <div className="bg-white rounded-2xl shadow-md p-6 sticky top-24">
             <h3 className="font-bold text-gray-900 mb-3">Listed by</h3>
-            <p className="text-gray-700 mb-1">{property.owner_name || "EstateAI"}</p>
+            <p className="text-gray-700 mb-1">{property.owner_name || "AI Property Valuation"}</p>
             <p className="text-xs text-gray-400 mb-4">
               {property.created_at ? `Posted ${new Date(property.created_at).toLocaleDateString()}` : ""}
             </p>
@@ -223,7 +223,7 @@ function PropertyDetails() {
                   📞 Call Seller
                 </a>
                 <a
-                  href={`https://wa.me/${String(property.owner_phone).replace(/\D/g,"").replace(/^0/, "250")}?text=${encodeURIComponent(`Hi! I'm interested in your property "${property.title}" on EstateAI Rwanda.`)}`}
+                  href={`https://wa.me/${String(property.owner_phone).replace(/\D/g,"").replace(/^0/, "250")}?text=${encodeURIComponent(`Hi! I'm interested in your property "${property.title}" on the AI-Based Property Valuation System.`)}`}
                   target="_blank" rel="noreferrer"
                   className="block text-center w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition-colors mb-2"
                 >

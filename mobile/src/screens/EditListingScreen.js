@@ -13,7 +13,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getPropertyApi, updatePropertyApi } from "../api/properties";
 import { getColors, radius, spacing } from "../theme/colors";
-import PaymentMethodsField from "../components/PaymentMethodsField";
 
 const TYPE_OPTIONS = ["buy", "rent"];
 const PROPERTY_TYPES = ["house", "villa", "apartment", "townhouse", "land"];
@@ -27,37 +26,19 @@ export default function EditListingScreen({ route, navigation }) {
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState(null);
   const [form, setForm] = useState({});
-  const [payment, setPayment] = useState({
-    methods: [], mtn_number: "", airtel_number: "",
-    bk_account_number: "", equity_account_number: "",
-    account_holder_name: "", show_payment_details: true,
-  });
 
   useEffect(() => {
     getPropertyApi(propertyId)
-      .then(p => {
-        setForm({
-          title: p.title || "", price: String(p.price || ""),
-          type: p.type || "rent", property_type: p.property_type || "house",
-          district: p.district || "", sector: p.sector || "", location: p.location || "",
-          bedrooms: String(p.bedrooms || ""), bathrooms: String(p.bathrooms || ""),
-          size_sqft: String(p.size_sqft || ""), year_built: String(p.year_built || ""),
-          furnished: !!p.furnished, parking: String(p.parking || 0),
-          internet: !!p.amenities?.internet, water: !!p.amenities?.water,
-          electricity: !!p.amenities?.electricity, security: !!p.amenities?.security,
-        });
-        // Pre-fill payment from the property (owner view always returns full data)
-        const pay = p.payment || {};
-        setPayment({
-          methods: pay.methods || [],
-          mtn_number:            pay.mtn_number || "",
-          airtel_number:         pay.airtel_number || "",
-          bk_account_number:     pay.bk_account_number || "",
-          equity_account_number: pay.equity_account_number || "",
-          account_holder_name:   pay.account_holder_name || "",
-          show_payment_details:  pay.show_payment_details !== false,
-        });
-      })
+      .then(p => setForm({
+        title: p.title || "", price: String(p.price || ""),
+        type: p.type || "rent", property_type: p.property_type || "house",
+        district: p.district || "", sector: p.sector || "", location: p.location || "",
+        bedrooms: String(p.bedrooms || ""), bathrooms: String(p.bathrooms || ""),
+        size_sqft: String(p.size_sqft || ""), year_built: String(p.year_built || ""),
+        furnished: !!p.furnished, parking: String(p.parking || 0),
+        internet: !!p.amenities?.internet, water: !!p.amenities?.water,
+        electricity: !!p.amenities?.electricity, security: !!p.amenities?.security,
+      }))
       .catch(e => setErr(e.message))
       .finally(() => setLoading(false));
   }, [propertyId]);
@@ -76,14 +57,6 @@ export default function EditListingScreen({ route, navigation }) {
       size_sqft: form.size_sqft ? Number(form.size_sqft) : null,
       year_built: form.year_built ? Number(form.year_built) : null,
       parking: form.parking ? Number(form.parking) : 0,
-      // ---- Seller payment methods (server validates) ----
-      payment_methods:       payment.methods.join(","),
-      mtn_number:            payment.mtn_number || null,
-      airtel_number:         payment.airtel_number || null,
-      bk_account_number:     payment.bk_account_number || null,
-      equity_account_number: payment.equity_account_number || null,
-      account_holder_name:   payment.account_holder_name || null,
-      show_payment_details:  payment.show_payment_details !== false,
     };
     try {
       const r = await updatePropertyApi(propertyId, payload);
@@ -165,9 +138,6 @@ export default function EditListingScreen({ route, navigation }) {
             <Chip key={k} label={l} active={!!form[k]} onPress={() => set(k, !form[k])} />
           ))}
         </View>
-
-        {/* Seller Payment Methods */}
-        <PaymentMethodsField value={payment} onChange={setPayment} colors={colors} />
 
         <TouchableOpacity onPress={save} disabled={saving}
           style={{ marginTop: 18, padding: 14, borderRadius: radius.md,

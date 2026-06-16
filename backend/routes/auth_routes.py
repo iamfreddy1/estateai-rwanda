@@ -550,12 +550,12 @@ def _send_verification_code(user):
         )
         db.session.add(rec); db.session.commit()
         body = (
-            f"Welcome to EstateAI Rwanda!\n\n"
+            f"Welcome to the AI-Based Property Valuation System!\n\n"
             f"Your email verification code is:\n\n    {code}\n\n"
             f"It expires in 24 hours. Open the app and enter the code to verify your email.\n\n"
-            f"— EstateAI Rwanda"
+            f"— AI-Based Property Valuation System"
         )
-        send(user.email, "Verify your EstateAI Rwanda email", body)
+        send(user.email, "Verify your email — AI-Based Property Valuation System", body)
     except Exception as e:
         import logging; logging.getLogger("auth").exception("verification email failed: %s", e)
 

@@ -51,7 +51,7 @@ export default function SignupScreen({ navigation }) {
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <View style={styles.header}>
           <Text style={styles.emoji}>🏡</Text>
-          <Text style={[styles.brand, { color: colors.primary }]}>EstateAI Rwanda</Text>
+          <Text style={[styles.brand, { color: colors.primary }]}>AI Property Valuation</Text>
           <Text style={[styles.welcome, { color: colors.text }]}>Create your account</Text>
           <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
             Join the smartest real estate platform in Kigali

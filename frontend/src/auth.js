@@ -4,8 +4,8 @@
 // Wraps localStorage to manage the JWT token + cached user info.
 // Also provides API helpers for signup, login, and "who am I?".
 
-//const API_URL = "http://localhost:5000";
-const API_URL = "https://estateai-backend-0ncb.onrender.com";  // production
+//const API_URL = "https://estateai-backend-0ncb.onrender.com";
+const API_URL = "https://estateai-backend-0ncb.onrender.com";
 const TOKEN_KEY = "estateai_token";
 const USER_KEY = "estateai_user";
 
@@ -70,9 +70,9 @@ export async function fetchMe() {
   }
 }
 
-
-// ---------- POST /auth/forgot-password ----------
-// Always returns 200 to prevent account enumeration.
+// ============================================
+// Forgot password — sends a 6-digit code to the user's email
+// ============================================
 export async function forgotPasswordApi(email) {
   const res = await fetch(`${API_URL}/auth/forgot-password`, {
     method: "POST",
@@ -84,26 +84,36 @@ export async function forgotPasswordApi(email) {
   return data;
 }
 
-// ---------- POST /auth/reset-password ----------
-export async function resetPasswordApi({ email, code, newPassword }) {
+// ============================================
+// Reset password — submit the 6-digit code + new password
+// ============================================
+export async function resetPasswordApi(email, code, new_password) {
   const res = await fetch(`${API_URL}/auth/reset-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, code, new_password: newPassword }),
+    body: JSON.stringify({ email, code, new_password }),
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || "Could not reset password");
+  if (!res.ok) throw new Error(data.error || "Reset failed");
   return data;
 }
 
-// ---------- localStorage helpers for "Remember me" ----------
-const REMEMBER_KEY = "estateai_remembered_email";
+// ============================================
+// Remembered email (localStorage) — for the "Remember me" checkbox on login
+// ============================================
+const REMEMBER_KEY = "estateai_remember_email";
+
 export function getRememberedEmail() {
-  return localStorage.getItem(REMEMBER_KEY) || "";
+  try { return localStorage.getItem(REMEMBER_KEY) || ""; }
+  catch { return ""; }
 }
+
 export function setRememberedEmail(email) {
-  if (email) localStorage.setItem(REMEMBER_KEY, email);
+  try { localStorage.setItem(REMEMBER_KEY, email || ""); }
+  catch {}
 }
+
 export function clearRememberedEmail() {
-  localStorage.removeItem(REMEMBER_KEY);
+  try { localStorage.removeItem(REMEMBER_KEY); }
+  catch {}
 }

@@ -10,7 +10,7 @@ import logging
 log = logging.getLogger("mail")
 
 RESEND_API_URL = "https://api.resend.com/emails"
-DEFAULT_FROM = os.environ.get("MAIL_FROM", "EstateAI Rwanda <onboarding@resend.dev>")
+DEFAULT_FROM = os.environ.get("MAIL_FROM", "AI Property Valuation <onboarding@resend.dev>")
 
 
 def send(to_email: str, subject: str, text: str, html: str | None = None) -> dict:
@@ -49,9 +49,9 @@ def send_password_reset(to_email: str, name: str | None, code: str) -> dict:
     greet = f"Hi {name}," if name else "Hi,"
     text = (
         f"{greet}\n\n"
-        f"Your EstateAI Rwanda password reset code is:\n\n"
+        f"Your AI-Based Property Valuation System password reset code is:\n\n"
         f"    {code}\n\n"
         f"This code expires in 30 minutes. If you didn't request a password reset, you can safely ignore this email.\n\n"
-        f"— EstateAI Rwanda"
+        f"— AI-Based Property Valuation System"
     )
-    return send(to_email, "Your EstateAI Rwanda password reset code", text)
+    return send(to_email, "Your AI-Based Property Valuation System password reset code", text)

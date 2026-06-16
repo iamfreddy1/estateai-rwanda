@@ -13,7 +13,7 @@ export default function SplashScreen() {
   return (
     <View style={[styles.container, { backgroundColor: colors.primary }]}>
       <Text style={styles.emoji}>🏡</Text>
-      <Text style={styles.title}>EstateAI</Text>
+      <Text style={styles.title}>AI Property Valuation</Text>
       <Text style={styles.tag}>Rwanda 🇷🇼</Text>
       <ActivityIndicator size="large" color="#ffffff" style={{ marginTop: spacing.xxl }} />
     </View>

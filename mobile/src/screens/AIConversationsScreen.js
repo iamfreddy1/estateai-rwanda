@@ -81,7 +81,7 @@ export default function AIConversationsScreen({ navigation }) {
               No conversations yet
             </Text>
             <Text style={{ color: colors.textMuted, textAlign: "center", fontSize: 13 }}>
-              Tap “New chat” below to ask EstateAI anything about Kigali real estate.
+              Tap “New chat” below to ask the AI Assistant anything about Kigali real estate.
             </Text>
           </View>
         }
@@ -103,7 +103,7 @@ export default function AIConversationsScreen({ navigation }) {
             </View>
             {item.last_message && (
               <Text style={{ color: colors.textMuted, fontSize: 13 }} numberOfLines={2}>
-                {item.last_message.role === "user" ? "You: " : "EstateAI: "}{item.last_message.content}
+                {item.last_message.role === "user" ? "You: " : "AI Assistant: "}{item.last_message.content}
               </Text>
             )}
           </TouchableOpacity>

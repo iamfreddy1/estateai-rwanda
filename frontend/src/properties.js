@@ -5,8 +5,8 @@
 
 import { getToken } from "./auth";
 
-//const API_URL = "http://localhost:5000";
-const API_URL = "https://estateai-backend-0ncb.onrender.com";  // production
+//const API_URL = "https://estateai-backend-0ncb.onrender.com";
+const API_URL = "https://estateai-backend-0ncb.onrender.com";
 
 
 // ---------- GET /properties (with rich filters) ----------

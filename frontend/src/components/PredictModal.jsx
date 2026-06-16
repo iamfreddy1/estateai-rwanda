@@ -42,7 +42,7 @@ function PredictModal({ isOpen, onClose }) {
 
     try {
       // Call the Flask backend /predict endpoint
-      const response = await fetch("http://127.0.0.1:5000/predict", {
+      const response = await fetch("https://estateai-backend-0ncb.onrender.com/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

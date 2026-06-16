@@ -80,7 +80,7 @@ export default function ForgotPasswordScreen({ navigation }) {
         </Text>
         <Text style={{ color: colors.textMuted, fontSize: 14, lineHeight: 20, marginBottom: 8 }}>
           {step === 1
-            ? "Enter the email tied to your EstateAI account. We'll send a 6-digit code."
+            ? "Enter the email tied to your AI Property Valuation account. We'll send a 6-digit code."
             : "Enter the code we sent and choose a new password."}
         </Text>
 

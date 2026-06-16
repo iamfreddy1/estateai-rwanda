@@ -5,7 +5,7 @@
 // The backend enforces this server-side; we still hide the UI for non-admins.
 import { getToken } from "../auth";
 
-const API_URL = "https://estateai-backend-0ncb.onrender.com";  // production
+const API_URL = "https://estateai-backend-0ncb.onrender.com";
 
 function authHeaders() {
   const token = getToken();

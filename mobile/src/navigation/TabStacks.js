@@ -10,7 +10,6 @@ import RentScreen from "../screens/RentScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import PropertyDetailsScreen from "../screens/PropertyDetailsScreen";
 import EditListingScreen from "../screens/EditListingScreen";
-import PremiumUpgradeScreen from "../screens/PremiumUpgradeScreen";
 import SellScreen from "../screens/SellScreen";
 import EstimateLauncherScreen from "../screens/EstimateLauncherScreen";
 import EstimateHouseScreen from "../screens/EstimateHouseScreen";
@@ -40,7 +39,6 @@ export function HomeStack() {
       <HomeStackNav.Screen name="Rent" component={RentScreen} options={{ headerShown: true, title: "For Rent" }} />
       <HomeStackNav.Screen name="PropertyDetails" component={PropertyDetailsScreen} />
       <HomeStackNav.Screen name="EditListing" component={EditListingScreen} options={{ headerShown: true, title: "Edit Listing" }} />
-      <HomeStackNav.Screen name="PremiumUpgrade" component={PremiumUpgradeScreen} options={{ headerShown: true, title: "Landlord Premium" }} />
       <HomeStackNav.Screen name="AgentProfile" component={AgentProfileScreen} />
     </HomeStackNav.Navigator>
   );
@@ -53,7 +51,6 @@ export function BuyStack() {
       <BuyStackNav.Screen name="BuyMain" component={BuyScreen} />
       <BuyStackNav.Screen name="PropertyDetails" component={PropertyDetailsScreen} />
       <BuyStackNav.Screen name="EditListing" component={EditListingScreen} options={{ headerShown: true, title: "Edit Listing" }} />
-      <BuyStackNav.Screen name="PremiumUpgrade" component={PremiumUpgradeScreen} options={{ headerShown: true, title: "Landlord Premium" }} />
       <BuyStackNav.Screen name="AgentProfile" component={AgentProfileScreen} />
     </BuyStackNav.Navigator>
   );
@@ -66,7 +63,6 @@ export function RentStack() {
       <RentStackNav.Screen name="RentMain" component={RentScreen} />
       <RentStackNav.Screen name="PropertyDetails" component={PropertyDetailsScreen} />
       <RentStackNav.Screen name="EditListing" component={EditListingScreen} options={{ headerShown: true, title: "Edit Listing" }} />
-      <RentStackNav.Screen name="PremiumUpgrade" component={PremiumUpgradeScreen} options={{ headerShown: true, title: "Landlord Premium" }} />
       <RentStackNav.Screen name="AgentProfile" component={AgentProfileScreen} />
     </RentStackNav.Navigator>
   );
@@ -100,7 +96,6 @@ export function MessagesStack() {
       <MessagesStackNav.Screen name="Chat" component={ChatScreen} />
       <MessagesStackNav.Screen name="PropertyDetails" component={PropertyDetailsScreen} />
       <MessagesStackNav.Screen name="EditListing" component={EditListingScreen} options={{ headerShown: true, title: "Edit Listing" }} />
-      <MessagesStackNav.Screen name="PremiumUpgrade" component={PremiumUpgradeScreen} options={{ headerShown: true, title: "Landlord Premium" }} />
       <MessagesStackNav.Screen name="AgentProfile" component={AgentProfileScreen} />
     </MessagesStackNav.Navigator>
   );
@@ -125,7 +120,6 @@ export function ProfileStack() {
       <ProfileStackNav.Screen name="AdminPendingAgents" component={AdminPendingAgentsScreen} />
       <ProfileStackNav.Screen name="PropertyDetails" component={PropertyDetailsScreen} />
       <ProfileStackNav.Screen name="EditListing" component={EditListingScreen} options={{ headerShown: true, title: "Edit Listing" }} />
-      <ProfileStackNav.Screen name="PremiumUpgrade" component={PremiumUpgradeScreen} options={{ headerShown: true, title: "Landlord Premium" }} />
     </ProfileStackNav.Navigator>
   );
 }
