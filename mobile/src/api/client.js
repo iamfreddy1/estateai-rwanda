@@ -7,16 +7,17 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Production backend URL (Render)
-export const API_BASE_URL = "http://localhost:5000";  // USB reverse via adb
+export const API_BASE_URL = "https://estateai-backend-0ncb.onrender.com";
 
 // For local backend dev, swap the line above for:
-// export const API_BASE_URL = "http://10.89.54.59:5000";
+// export const API_BASE_URL = "http://localhost:5000";   // USB reverse via adb
+// export const API_BASE_URL = "http://10.89.54.59:5000"; // LAN IP of your laptop
 
 // Create the axios instance
 // 60s timeout to tolerate Render free-tier cold starts (~30-50s on first hit).
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 60000,            // 60s timeout
+  timeout: 120000,           // 120s timeout (tolerate Render free-tier cold start over cellular)
   headers: { "Content-Type": "application/json" },
 });
 
